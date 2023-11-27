@@ -54,6 +54,9 @@ for dir in ["left", "bottom"]:
 for dir in ["right", "top"]:
     ax.axis[dir].set_visible(False)
 
+font = {'fontname':'Cambria'}
+plt.title("Cambira font", **font)
+
 plt.semilogx(f, y)
 fh.show()
 _ = input('Enter to continue')

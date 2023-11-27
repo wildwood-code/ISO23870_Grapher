@@ -32,6 +32,9 @@ from matplotlib.ticker import ScalarFormatter
 from mpl_toolkits.axisartist.axislines import SubplotZero
 import zipfile
 import re
+import locale
+
+
 
 
 # ==============================================================================
@@ -50,6 +53,27 @@ ZIP_FILE_LIST = []
 # Output directory and format
 FIG_DIR = "C:\\Projects\\Python\\ISO23870_Grapher\\output\\"     # must end with backslash
 FIG_FORMAT = ".svg"   # .png or .svg    # must begin with period
+
+
+# ==============================================================================
+# Locale and Font Settings
+# ==============================================================================
+
+# Set to German locale to get comma decimal separater
+locale.setlocale(locale.LC_NUMERIC, "de_DE")
+plt.rcdefaults()
+
+# Tell matplotlib to use the locale we set above
+plt.rcParams['axes.formatter.use_locale'] = True
+
+# ISO standard figure font
+ISO_FONT = "Cambria"
+
+# Say, "the default sans-serif font is COMIC SANS"
+plt.rcParams['font.serif'] = ISO_FONT
+
+# Then, "ALWAYS use sans-serif fonts"
+plt.rcParams['font.family'] = "serif"
 
 
 # ==============================================================================
@@ -103,6 +127,7 @@ def FIGURE_FigSave(fig, figname=None):
     global FIG_FORMAT
     global PLOT_LANGUAGE
     global STD_LANGUAGE
+    global ISO_FONT
 
     if figname is not None:
         savename = f"{FIG_DIR}FIG-{fig:03}_{STD_NAME}_(E)_Ed1 {figname}{FIG_FORMAT}"
@@ -191,16 +216,16 @@ def OPEN_Plot(fun, is_dc=False, title=None, abbr=None, unit=None, logx=True, xli
     if ylim is not None:
         plt.ylim(ylim)
     if yticks is not None:
-        ax = plt.gca()
         ax.set_yticks(yticks[0], yticks[1])
     if title is not None:
         plt.title(title, weight='bold')
 
-    plt.xlabel('F (MHz)')
+
+    ax.set_xlabel('F (MHz)')
     if unit is not None:
-        plt.ylabel(f'Y ({unit})')
+        ax.set_ylabel(f'Y ({unit})')
     else:
-        plt.ylabel('Y')
+        ax.set_ylabel('Y')
 
 
     if abbr is not None and unit is not None:
@@ -211,7 +236,6 @@ def OPEN_Plot(fun, is_dc=False, title=None, abbr=None, unit=None, logx=True, xli
         vunit = f'{abbr}'
     if fig is not None:
         AddKeyToFigure(fig, "Y", vunit)
-
 
     plt.gca().xaxis.set_major_formatter(ScalarFormatter())
     plt.grid(visible=True, which='both')
