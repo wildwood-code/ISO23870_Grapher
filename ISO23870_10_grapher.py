@@ -286,6 +286,8 @@ def OPEN_Plot(fun, is_dc=False, title=None, abbr=None, unit=None, logx=True, xli
     if save is None and fig is None:
         plt.show()
 
+    plt.close()
+
 
 # y = feval(x, fun)
 #
@@ -870,45 +872,60 @@ def Zshield_max_ECU_DC(f=None):
 
 
 # ==============================================================================
+# Automatic Figure Numbering
+# ==============================================================================
+
+FIGURE = 0
+def next_figure():
+    global FIGURE
+    FIGURE = FIGURE + 1
+    return FIGURE
+
+def skip_figure(skip=0):
+    global FIGURE
+    FIGURE = FIGURE + skip
+    return FIGURE
+
+
+# ==============================================================================
 # Main Program Entry Point
 # ==============================================================================
 
-if False: # Whole communication channel plots
-    #OPEN_Plot(ILmax_WCC_LSTA, title="Insertion Loss (IL)\nCommunication Channel (LSTA)", abbr="IL", unit="dB", ylim=[0.0, 20.0], xypass=(0.75,0.2), xyfail=(0.6, 0.4), save=f"C:\\Temp\\WCC_IL_LSTA{FIG_FORMAT}")
-    OPEN_Plot(ILmax_WCC_LSTB, abbr="IL", unit="dB", ylim=[0.0, 20.0], xypass=(0.75,0.35), xyfail=(0.55, 0.45), save=f"C:\\Temp\\WCC_IL_LSTB{FIG_FORMAT}") # title="Insertion Loss (IL)\nCommunication Channel (LSTB)",
-    OPEN_Plot(RLmax_WCC, abbr="RL", unit="dB", ylim=[10.0, 20.0], xypass=(0.60, 0.72), xyfail=(0.60, 0.45), save=f"C:\\Temp\\WCC_RL{FIG_FORMAT}")  # title="Return Loss (RL)\nCommunication Channel",
-    OPEN_Plot(LCLmax_WCC, abbr="LCL, LCTL", unit="dB", ylim=[20.0, 45.0], xypass=(0.75,0.55), xyfail=(0.6, 0.35), save=f"C:\\Temp\\WCC_LCL{FIG_FORMAT}")  # title="Mode Conversion Loss (LCL, LCTL)\nCommunication Channel",
-    OPEN_Plot(PSANEXT_WCC_ES, abbr="PSANEXT", unit="dB", ylim=[30.0, 80.0], xypass=(0.75,0.55), xyfail=(0.6, 0.35), save=f"C:\\Temp\\WCC_PSAN{FIG_FORMAT}")  # title="Near-end Crosstalk Loss (PSANEXT)\nCommunication Channel",
-    OPEN_Plot(PSAACRF_WCC_ES, abbr="PSANEXT", unit="dB", ylim=[20.0, 100.0], xypass=(0.65,0.5), xyfail=(0.45, 0.25), save=f"C:\\Temp\\WCC_PSAA{FIG_FORMAT}")  # title="Far-end Atten/Crosstalk Ratio (PSAACRF)\nCommunication Channel",
-    OPEN_Plot(Atten_c_class1_WCC_ES, abbr=r"$a_c$", unit="dB", ylim=[45.0, 70.0], xypass=[400.0, 61.5], xyfail=[120.0, 56.5], save=f"C:\\Temp\\WCC_AC{FIG_FORMAT}")  # title="Coupling Attenuation (class 1)\nCommunication Channel",
-    OPEN_Plot(Atten_s_class1_WCC_ES, abbr=r"$a_s$", unit="dB", ylim=[22.0, 28.0],  xypass=[130.0, 25.3], xyfail=[130.0, 24.6], save=f"C:\\Temp\\WCC_AS{FIG_FORMAT}")  # title="Screening Attenuation (class 1)\nCommunication Channel",
+# Whole communication channel plots
+OPEN_Plot(ILmax_WCC_LSTB, abbr="IL", unit="dB", ylim=[0.0, 20.0], xypass=(0.75,0.35), xyfail=(0.55, 0.45), fig=next_figure(), figname="Insertion Loss (IL) Channel")
+OPEN_Plot(RLmax_WCC, abbr="RL", unit="dB", ylim=[10.0, 20.0], xypass=(0.60, 0.72), xyfail=(0.60, 0.45), fig=next_figure(), figname="Return Loss (RL) Channel")
+OPEN_Plot(LCLmax_WCC, abbr="LCL, LCTL", unit="dB", ylim=[20.0, 45.0], xypass=(0.75,0.55), xyfail=(0.6, 0.35), fig=next_figure(), figname="Mode Conversion Loss (LCL, LCTL) Channel")
+OPEN_Plot(PSANEXT_WCC_ES, abbr="PSANEXT", unit="dB", ylim=[30.0, 80.0], xypass=(0.75,0.55), xyfail=(0.6, 0.35), fig=next_figure(), figname="PSANEXT Channel")
+OPEN_Plot(PSAACRF_WCC_ES, abbr="PSAACRF", unit="dB", ylim=[20.0, 100.0], xypass=(0.65,0.5), xyfail=(0.45, 0.25), fig=next_figure(), figname="PSAACRF Channel")
+OPEN_Plot(Atten_c_class1_WCC_ES, abbr=r"$a_c$", unit="dB", ylim=[45.0, 70.0], xypass=[400.0, 61.5], xyfail=[120.0, 56.5], fig=next_figure(), figname="Coupling Attenuation Channel")
+OPEN_Plot(Atten_s_class1_WCC_ES, abbr=r"$a_s$", unit="dB", ylim=[22.0, 28.0],  xypass=[130.0, 25.3], xyfail=[130.0, 24.6], fig=next_figure(), figname="Screening Attenuation Channel")
 
-if False:  # Connector plots
-    OPEN_Plot(ILmax_conn, abbr="IL", unit="dB", ylim=[0.0, 0.25], xypass=(0.75,0.3), xyfail=(0.6,0.5), save=f"C:\\Temp\\CONN_IL{FIG_FORMAT}")  # title="Insertion Loss (IL)\nConnector",
-    OPEN_Plot(RLmax_conn, abbr="RL", unit="dB", ylim=[15.0,35.0], xypass=(0.60, 0.82), xyfail=(0.60, 0.68), save=f"C:\\Temp\\CONN_RL{FIG_FORMAT}")  # title="Return Loss (RL)\nConnector",
-    OPEN_Plot(LCLmax_conn, abbr="LCL, LCTL", unit="dB", ylim=[30.0, 60.0], xypass=(0.7,0.55), xyfail=(0.55, 0.35), save=f"C:\\Temp\\CONN_LCL{FIG_FORMAT}")  # title="Mode Conversion Loss (LCL, LCTL)\nConnector",
-    OPEN_Plot(PSANEXT_conn_ES, abbr="PSANEXT", unit="dB", ylim=[35.0,80.0], xypass=(0.4, 0.8), xyfail=(0.4, 0.5), save=f"C:\\Temp\\CONN_PSANEXT{FIG_FORMAT}")  # title="PSANEXT\nConnector",
-    OPEN_Plot(PSAFEXT_conn_ES, abbr="PSAFEXT", unit="dB", ylim=[20.0, 100.0], xypass=(0.4, 0.7), xyfail=(0.4, 0.4), save=f"C:\\Temp\\CONN_PSAFEXT{FIG_FORMAT}")  # title="PSAFEXT\nConnector",
-    OPEN_Plot(Atten_c_class1_conn_ES, abbr="$a_c$", unit="dB", ylim=[50.0, 80.0], xypass=[400.0, 63.5], xyfail=[200.0, 56.5], save=f"C:\\Temp\\CONN_Atten_c{FIG_FORMAT}")  # title="Coupling Attenuation (class 1)\nConnector",
-    OPEN_Plot(Atten_s_class1_conn_ES, abbr="$a_s$", unit="dB", ylim=[10.0, 40.0], xypass=[150.0, 31.0], xyfail=[150.0, 26.0], save=f"C:\\Temp\\CONN_Atten_s{FIG_FORMAT}")  # title="Screening Attenuation (class 1)\nConnector",
+# Connector plots
+OPEN_Plot(ILmax_conn, abbr="IL", unit="dB", ylim=[0.0, 0.25], xypass=(0.75,0.3), xyfail=(0.6,0.5), fig=next_figure(), figname="Insertion Loss (IL) Connector")
+OPEN_Plot(RLmax_conn, abbr="RL", unit="dB", ylim=[15.0,35.0], xypass=(0.60, 0.82), xyfail=(0.60, 0.68), fig=next_figure(), figname="Return Loss (RL) Connector")
+OPEN_Plot(LCLmax_conn, abbr="LCL, LCTL", unit="dB", ylim=[30.0, 60.0], xypass=(0.7,0.55), xyfail=(0.55, 0.35), fig=next_figure(), figname="Mode Conversion Loss (LCL, LCTL) Connector")
+OPEN_Plot(PSANEXT_conn_ES, abbr="PSANEXT", unit="dB", ylim=[35.0,80.0], xypass=(0.4, 0.8), xyfail=(0.4, 0.5), fig=next_figure(), figname="PSANEXT Connector")
+OPEN_Plot(PSAFEXT_conn_ES, abbr="PSAFEXT", unit="dB", ylim=[20.0, 100.0], xypass=(0.4, 0.7), xyfail=(0.4, 0.4), fig=next_figure(), figname="PSAFEXT Connector")
+OPEN_Plot(Atten_c_class1_conn_ES, abbr="$a_c$", unit="dB", ylim=[50.0, 80.0], xypass=[400.0, 63.5], xyfail=[200.0, 56.5], fig=next_figure(), figname="Coupling Attenuation Connector")
+OPEN_Plot(Atten_s_class1_conn_ES, abbr="$a_s$", unit="dB", ylim=[10.0, 40.0], xypass=[150.0, 31.0], xyfail=[150.0, 26.0], fig=next_figure(), figname="Screening Attenuation Connector")
 
-if True:  # Cable plots
-    OPEN_Plot(ILmax_cable, abbr="IL", unit='dB/m', ylim=[0.0, 1.0], xypass=[150.0, 0.25], xyfail=[50.0, 0.4], fig=1, figname="Insertion Loss (IL) Cable")  ##save=f"C:\\Temp\\CABLE_IL{FIG_FORMAT}")  # title="Insertion Loss (IL)\nCable",
-    OPEN_Plot(RLmax_cable, abbr="RL", unit="dB", ylim=[10.0, 25.0], xypass=[80.0, 20.0], xyfail=[80.0, 17.5], fig=2, figname="Return Loss (RL) Cable")  ##save=f"C:\\Temp\\CABLE_RL{FIG_FORMAT}")  # title="Return Loss (RL)\nCable",
-    OPEN_Plot(LCLmax_cable, abbr="LCL", unit="dB", ylim=[25.0, 55.0], xypass=[140.0, 47.0], xyfail=[140.0, 36.0], fig=3, figname="Mode Conversion Loss (LCL) Cable")  ## save=f"C:\\Temp\\CABLE_LCL{FIG_FORMAT}")  # title="Mode Conversion Loss (LCL)\nCable",
-    OPEN_Plot(LCTLmax_cable, abbr="LCTL", unit="dB", ylim=[25.0, 50.0], xypass=[140.0, 45.0], xyfail=[140.0, 34.0], fig=4, figname="Mode Conversion Loss (LCTL) Cable")  ## save=f"C:\\Temp\\CABLE_LCTL{FIG_FORMAT}")  # title="Mode Conversion Loss (LCTL)\nCable",
-    OPEN_Plot(Atten_c_class1_cable_ES, abbr="$a_c$", unit="dB", ylim=[65.0, 75.0], xypass=[140.0, 71.0], xyfail=[140.0, 69.0], fig=5, figname="Coupling Attenuation (class 1) Cable") ## save=f"C:\\Temp\\CABLE_Atten_c{FIG_FORMAT}")  # title="Coupling Attenuation (class 1)\nCable",
-    OPEN_Plot(Atten_s_class1_cable_ES, abbr="$a_s$", unit="dB", ylim=[25.0, 45.0], xypass=[140.0, 36.7], xyfail=[140.0, 33.0], fig=6, figname="Screening Attenuation (class 1) Cable")  ##save=f"C:\\Temp\\CABLE_Atten_s{FIG_FORMAT}")  # title="Screening Attenuation (class 1)\nCable",
+# Cable plots
+OPEN_Plot(ILmax_cable, abbr="IL", unit='dB/m', ylim=[0.0, 1.0], xypass=[150.0, 0.25], xyfail=[50.0, 0.4], fig=next_figure(), figname="Insertion Loss (IL) Cable")
+OPEN_Plot(RLmax_cable, abbr="RL", unit="dB", ylim=[10.0, 25.0], xypass=[80.0, 20.0], xyfail=[80.0, 17.5], fig=next_figure(), figname="Return Loss (RL) Cable")
+OPEN_Plot(LCLmax_cable, abbr="LCL", unit="dB", ylim=[25.0, 55.0], xypass=[140.0, 47.0], xyfail=[140.0, 36.0], fig=next_figure(), figname="Mode Conversion Loss (LCL) Cable")
+OPEN_Plot(LCTLmax_cable, abbr="LCTL", unit="dB", ylim=[25.0, 50.0], xypass=[140.0, 45.0], xyfail=[140.0, 34.0], fig=next_figure(), figname="Mode Conversion Loss (LCTL) Cable")
+OPEN_Plot(Atten_c_class1_cable_ES, abbr="$a_c$", unit="dB", ylim=[65.0, 75.0], xypass=[140.0, 71.0], xyfail=[140.0, 69.0], fig=next_figure(), figname="Coupling Attenuation Cable")
+OPEN_Plot(Atten_s_class1_cable_ES, abbr="$a_s$", unit="dB", ylim=[25.0, 45.0], xypass=[140.0, 36.7], xyfail=[140.0, 33.0], fig=next_figure(), figname="Screening Attenuation Cable")
 
-if False: # Cable assembly plots
-    OPEN_Plot(RLmax_cable_assy, abbr="RL", unit="dB", ylim=[10.0, 30.0], xypass=[20.0, 23.0], xyfail=[20.0, 20.5], save=f"C:\\Temp\\CASSY_RL{FIG_FORMAT}")  # title="Return Loss (RL)\nCable Assembly",
-    OPEN_Plot(LCLmax_cable_assy,  abbr="LCL, LCTL", unit="dB", ylim=[20.0, 45.0], xypass=[140.0, 37.7], xyfail=[140.0, 30.5], save=f"C:\\Temp\\CASSY_LCL_LCTL{FIG_FORMAT}")  # title="Mode Conversion Loss (LCL, LCTL)\nCable Assembly",
-    OPEN_Plot(Atten_c_class1_cable_assy_ES, abbr="$a_c$", unit="dB", ylim=[55,75], xypass=[140.0, 71.0], xyfail=[140.0, 65.0], save=f"C:\\Temp\\CASSY_Atten_c{FIG_FORMAT}")  # title="Coupling Attenuation (class 1)\nCable Assembly",
-    OPEN_Plot(Atten_s_class1_cable_assy_ES, abbr="$a_s$", unit="dB", ylim=[20.0, 35.0], xypass=[140.0, 30.0], xyfail=[140.0, 26.0], save=f"C:\\Temp\\CASSY_Atten_s{FIG_FORMAT}")  # title="Screening Attenuation (class 1)\nCable Assembly",
+# Cable assembly plots
+OPEN_Plot(RLmax_cable_assy, abbr="RL", unit="dB", ylim=[10.0, 30.0], xypass=[20.0, 23.0], xyfail=[20.0, 20.5], fig=next_figure(), figname="Return Loss (RL) Assembly")
+OPEN_Plot(LCLmax_cable_assy,  abbr="LCL, LCTL", unit="dB", ylim=[20.0, 45.0], xypass=[140.0, 37.7], xyfail=[140.0, 30.5], fig=next_figure(), figname="Mode Conversion Loss (LCL, LCTL) Assembly")
+OPEN_Plot(Atten_c_class1_cable_assy_ES, abbr="$a_c$", unit="dB", ylim=[55,75], xypass=[140.0, 71.0], xyfail=[140.0, 65.0], fig=next_figure(), figname="Coupling Attenuation Assembly")
+OPEN_Plot(Atten_s_class1_cable_assy_ES, abbr="$a_s$", unit="dB", ylim=[20.0, 35.0], xypass=[140.0, 30.0], xyfail=[140.0, 26.0], fig=next_figure(), figname="Screening Attenuation Assembly")
 
-if True:
-    OPEN_Plot(Zshield_max_ECU, abbr=r"$|Z_{shield}|$", unit=r"$\Omega$", ylim=[0, 80], xypass=[200, 20], xyfail=[120, 45], fig=7, figname="ECU Shield Impedance (AC)")  ## save=f"C:\\Temp\\ECU_Shield_Z_AC{FIG_FORMAT}")
-    OPEN_Plot(Zshield_max_ECU_DC, is_dc=True, abbr=r"$R_{shield}$", unit=r"$\Omega$", ylim=[1.0, 10000.0], yticks=([1, 10, 100, 1000, 10000], ["1", "10", "100", "1k", "10k"]), xypass=[0.0, 100.0], xyfail=[0.0, 5.0], xyfail2=[0.0, 3000.0], fig=8, figname="ECU Shield Impedance (DC)")  ##save=f"c:\\Temp\\ECU_Shield_Z_DC{FIG_FORMAT}")
+
+OPEN_Plot(Zshield_max_ECU, abbr=r"$|Z_{shield}|$", unit=r"$\Omega$", ylim=[0, 80], xypass=[200, 20], xyfail=[120, 45], fig=next_figure(), figname="ECU Shield Impedance (AC)")
+OPEN_Plot(Zshield_max_ECU_DC, is_dc=True, abbr=r"$R_{shield}$", unit=r"$\Omega$", ylim=[1.0, 10000.0], yticks=([1, 10, 100, 1000, 10000], ["1", "10", "100", "1k", "10k"]), xypass=[0.0, 100.0], xyfail=[0.0, 5.0], xyfail2=[0.0, 3000.0], fig=next_figure(), figname="ECU Shield Impedance (DC)")
 
 keyfilename = f"{FIG_DIR}{STD_NAME}_(E)_KEYS.txt"
 CreateKeyTable(keyfilename)
