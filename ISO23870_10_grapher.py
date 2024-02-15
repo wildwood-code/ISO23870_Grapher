@@ -33,283 +33,8 @@ from mpl_toolkits.axisartist.axislines import SubplotZero
 import zipfile
 import re
 import locale
+from ISO_plotlib import ISO_Plots
 
-
-
-
-# ==============================================================================
-# Global variables
-# ==============================================================================
-
-# Standard definitions
-STD_NAME = "ISO_23870-10"
-
-# Key table
-KEY_TABLE = []
-
-# Zip archive
-ZIP_FILE_LIST = []
-
-# Output directory and format
-FIG_DIR = "C:\\Projects\\Python\\ISO23870_Grapher\\output\\"     # must end with backslash
-FIG_FORMAT = ".png"   # .png or .svg    # must begin with period
-
-
-# ==============================================================================
-# Locale and Font Settings
-# ==============================================================================
-
-# Set to German locale to get comma decimal separater
-locale.setlocale(locale.LC_NUMERIC, "de_DE")
-plt.rcdefaults()
-
-# Tell matplotlib to use the locale we set above
-plt.rcParams['axes.formatter.use_locale'] = True
-
-# ISO standard figure font
-ISO_FONT = "Cambria"
-
-# Say, "the default sans-serif font is COMIC SANS"
-plt.rcParams['font.serif'] = ISO_FONT
-
-# Then, "ALWAYS use sans-serif fonts"
-plt.rcParams['font.family'] = "serif"
-
-
-# ==============================================================================
-# Generate Key Table
-# ==============================================================================
-
-def AddKeyToFigure(fig, key, value):
-    global KEY_TABLE
-    line = f'FIG{fig:03}\t{key}\t{value}\n'
-    KEY_TABLE.append(line)
-
-
-def CreateKeyTable(filename):
-    global KEY_TABLE
-    fh = open(filename, "w")
-    for line in KEY_TABLE:
-        fh.write(line)
-    fh.close()
-
-
-# ==============================================================================
-# Generate Zip Archive
-# ==============================================================================
-
-def AddFileToZip(filename=None):
-    global ZIP_FILE_LIST
-    if filename is not None:
-        ZIP_FILE_LIST.append(filename)
-
-
-def CreateZipArchive():
-    global ZIP_FILE_LIST
-    global FIG_DIR
-    global STD_NAME
-    zip_filename = f"{FIG_DIR}FIGURES-{STD_NAME}_(E).zip"
-    zip = zipfile.ZipFile(zip_filename, mode="w")
-    for filename in ZIP_FILE_LIST:
-        m = re.search(r"[^\\]+$", filename)
-        shortname = m.group(0)
-        zip.write(filename, arcname=shortname)
-    zip.close()
-
-
-# ==============================================================================
-# Generate Plots
-# ==============================================================================
-
-def FIGURE_FigSave(fig, figname=None):
-    global FIG_DIR
-    global STD_NAME
-    global FIG_FORMAT
-    global PLOT_LANGUAGE
-    global STD_LANGUAGE
-    global ISO_FONT
-
-    if figname is not None:
-        savename = f"{FIG_DIR}FIG-{fig:03}_{STD_NAME}_(E)_Ed1 {figname}{FIG_FORMAT}"
-    else:
-        savename = f"{FIG_DIR}FIG-{fig:03}_{STD_NAME}_(E)_Ed1{FIG_FORMAT}"
-    plt.savefig(savename)
-    AddFileToZip(savename)
-
-
-# OPEN_Plot
-#
-# Description:
-#  Generate a plot of the specified OPEN limit
-
-def OPEN_Plot(fun, is_dc=False, title=None, abbr=None, unit=None, logx=True, xlim=None, ylim=None, yticks=None, xypass=None, xyfail=None, xyfail2=None, xybetter=None, dbetter=None, save=None, fig=None, figname=None):
-    global FIG_DIR
-    global STD_NAME
-    global FIG_FORMAT
-
-    y, f = fun()
-
-    if type(y[0]) is tuple:
-        is_multi = True
-        n_traces = len(y[0])
-        y = map(np.array, y)
-        y = np.array(list(y))
-    else:
-        is_multi = False
-
-    fh = plt.figure()
-    ax = SubplotZero(fh, 111)
-    fh.add_subplot(ax)
-    trans = ax.transAxes
-    if False:
-        # TODO: may need to improve the DC (for now it is same as AC plots)
-        for dir in ["yzero", "bottom"]:
-            ax.axis[dir].set_axisline_style("-|>")
-            ax.axis[dir].set_visible(True)
-        for dir in ["left", "right", "top"]:
-            ax.axis[dir].set_visible(False)
-    else:
-        for dir in ["left", "bottom"]:
-            ax.axis[dir].set_axisline_style("-|>")
-            ax.axis[dir].set_visible(True)
-        for dir in ["right", "top"]:
-            ax.axis[dir].set_visible(False)
-
-    if is_dc:
-        fd = np.max(f)-np.min(f)
-        fc = 0.5*(np.max(f)+np.min(f))
-        f1, f2 = fc-fd, fc+fd
-
-        if is_multi:
-            for idx in range(n_traces):
-                yt = y[:,idx]
-                plt.semilogy(f, yt, 'b-')
-        else:
-            plt.semilogy(f, y, 'b-')
-
-    else:
-        f1, f2 = np.min(f), 1000.0
-        if f1<10.0:
-            f1 = 1.0
-        elif f1<100.0:
-            f1 = 10.0
-        else:
-            f1 = 100.0
-
-        if is_multi:
-            for idx in range(n_traces):
-                yt = y[:,idx]
-                if logx:
-                    plt.semilogx(f,yt)
-                else:
-                    plt.plot(f,yt)
-        else:
-            if logx:
-                plt.semilogx(f, y)
-            else:
-                plt.plot(f,y)
-
-    if xlim is not None:
-        plt.xlim(xlim)
-    else:
-        plt.xlim([f1, f2])
-    if ylim is not None:
-        plt.ylim(ylim)
-    if yticks is not None:
-        ax.set_yticks(yticks[0], yticks[1])
-    if title is not None:
-        plt.title(title, weight='bold')
-
-
-    ax.set_xlabel('F (MHz)')
-    if unit is not None:
-        ax.set_ylabel(f'Y ({unit})')
-    else:
-        ax.set_ylabel('Y')
-
-
-    if abbr is not None and unit is not None:
-        vunit = f'{abbr} ({unit})'
-    elif abbr is None:
-        vunit = f'LIMIT ({unit})'
-    else:
-        vunit = f'{abbr}'
-    if fig is not None:
-        AddKeyToFigure(fig, "Y", vunit)
-
-    plt.gca().xaxis.set_major_formatter(ScalarFormatter())
-    plt.grid(visible=True, which='both')
-
-    if xypass is not None:
-        if type(xypass) is tuple:
-            x, y = xypass
-            ax.text(x, y, "(1)", transform=trans, weight="bold", size=16, ha='center', va='center', color='gray')
-        elif type(xypass) is list:
-            x, y = xypass[0], xypass[1]
-            ax.text(x, y, "(1)", weight="bold", size=16, ha='center', va='center', color='gray')
-
-    if xyfail is not None:
-        if type(xyfail) is tuple:
-            x, y = xyfail
-            ax.text(x, y, "(2)", transform=trans, weight="bold", size=16, ha='center', va='center', color='gray')
-        elif type(xyfail) is list:
-            x, y = xyfail[0], xyfail[1]
-            ax.text(x, y, "(2)", weight="bold", size=16, ha='center', va='center', color='gray')
-
-    if xyfail2 is not None:
-        if type(xyfail2) is tuple:
-            x, y = xyfail2
-            ax.text(x, y, "(2)", transform=trans, weight="bold", size=16, ha='center', va='center', color='gray')
-        elif type(xyfail2) is list:
-            x, y = xyfail2[0], xyfail2[1]
-            ax.text(x, y, "(2)", weight="bold", size=16, ha='center', va='center', color='gray')
-
-
-    if xybetter is not None:
-        tbetter = "(1)"   # TODO: check/change here if pass or fail is defined
-        boxstyle = 'rarrow' if dbetter is None or dbetter>0 else 'larrow'
-        if type(xybetter) is tuple:
-            x, y = xybetter
-            ax.text(x, y, tbetter, color='gray', ha='center', va='center', rotation=90, size=16, bbox=dict(boxstyle=boxstyle, ec='gray', fc='white'), transform=trans)
-        elif type(xybetter) is list:
-            x, y = xybetter[0], xybetter[1]
-            ax.text(x, y, tbetter, color='gray', ha='center', va='center', rotation=90, size=16, bbox=dict(boxstyle=boxstyle, ec='gray', fc='white'))
-    if is_dc:
-        plt.xticks([0.0], ['0'])
-
-    if save is not None:
-        plt.savefig(save)
-
-    if fig is not None:
-        FIGURE_FigSave(fig, figname)
-
-    if save is None and fig is None:
-        plt.show()
-
-    plt.close()
-
-
-# y = feval(x, fun)
-#
-# Description:
-#   Evaluates the given function at every point in 1D array x
-#
-def feval(x, fun):
-    if type(x) is float:
-        y = fun(x)
-    elif type(x) is np.ndarray:
-        y = None
-        it = np.nditer(x, flags=["f_index"])
-        for xx in it:
-            i = it.index
-            v = fun(float(xx))
-            if y is None:
-                y = np.empty(x.shape, dtype=type(v))
-            y[i] = v
-    else:
-        raise Exception("Invalid type for x. Accepts float and ndarray of float")
-
-    return y
 
 
 # ==============================================================================
@@ -323,9 +48,9 @@ def ILmax_conn(f=None):
     if f is None:
         # sample at 101 points, log spaced, across the range the limit is defined
         f = np.logspace(np.log10(1.0), np.log10(600.0), 101)
-        return feval(f, ILmax_conn), f
+        return ISO_Plots.feval(f, ILmax_conn), f
     elif type(f) is np.ndarray:
-        return feval(f, ILmax_conn)
+        return ISO_Plots.feval(f, ILmax_conn)
     elif f<1.0 or f>600.0:
         return None
     else:
@@ -337,9 +62,9 @@ def RLmax_conn(f=None):
     if f is None:
         # sample at the exact corner frequencies
         f = np.array([1.0, 189.7367, 600.0])
-        return feval(f, RLmax_conn), f
+        return ISO_Plots.feval(f, RLmax_conn), f
     elif type(f) is np.ndarray:
-        return feval(f, RLmax_conn)
+        return ISO_Plots.feval(f, RLmax_conn)
     elif f<1.0 or f>600.0:
         return None
     elif f<=189.7367:
@@ -352,9 +77,9 @@ def RLmax_conn(f=None):
 def LCLmax_conn(f=None):
     if f is None:
         f = np.array([10.0, 50.0, 600.0])
-        return feval(f, LCLmax_conn), f
+        return ISO_Plots.feval(f, LCLmax_conn), f
     elif type(f) is np.ndarray:
-        return feval(f, LCLmax_conn)
+        return ISO_Plots.feval(f, LCLmax_conn)
     elif f<10.0 or f>600.0:
         return None
     elif f<=50.0:
@@ -373,9 +98,9 @@ def LCTLmax_conn(f=None):
 def PSANEXT_conn_ES(f=None):
     if f is None:
         f = np.array([1.0, 100.0, 600.0])
-        return feval(f, PSANEXT_conn_ES), f
+        return ISO_Plots.feval(f, PSANEXT_conn_ES), f
     elif type(f) is np.ndarray:
-        return feval(f, PSANEXT_conn_ES)
+        return ISO_Plots.feval(f, PSANEXT_conn_ES)
     elif f<1.0 or f>600.0:
         return None
     elif f<=100.0:
@@ -388,9 +113,9 @@ def PSANEXT_conn_ES(f=None):
 def PSAFEXT_conn_ES(f=None):
     if f is None:
         f = np.array([1.0, 600.0])
-        return feval(f, PSAFEXT_conn_ES), f
+        return ISO_Plots.feval(f, PSAFEXT_conn_ES), f
     elif type(f) is np.ndarray:
-        return feval(f, PSAFEXT_conn_ES)
+        return ISO_Plots.feval(f, PSAFEXT_conn_ES)
     elif f<1.0 or f>600.0:
         return None
     else:
@@ -401,9 +126,9 @@ def PSAFEXT_conn_ES(f=None):
 def Atten_c_class1_conn_ES(f=None):
     if f is None:
         f = np.array([30.0, 100.0, 600.0])
-        return feval(f, Atten_c_class1_conn_ES), f
+        return ISO_Plots.feval(f, Atten_c_class1_conn_ES), f
     elif type(f) is np.ndarray:
-        return feval(f, Atten_c_class1_conn_ES)
+        return ISO_Plots.feval(f, Atten_c_class1_conn_ES)
     elif f<30.0 or f>600.0:
         return None
     elif f<=100.0:
@@ -416,9 +141,9 @@ def Atten_c_class1_conn_ES(f=None):
 def Atten_c_class2_conn_ES(f=None):
     if f is None:
         f = np.array([30.0, 600.0])
-        return feval(f, Atten_c_class2_conn_ES), f
+        return ISO_Plots.feval(f, Atten_c_class2_conn_ES), f
     elif type(f) is np.ndarray:
-        return feval(f, Atten_c_class2_conn_ES)
+        return ISO_Plots.feval(f, Atten_c_class2_conn_ES)
     elif f<30.0 or f>600.0:
         return None
     else:
@@ -429,9 +154,9 @@ def Atten_c_class2_conn_ES(f=None):
 def Atten_s_class1_conn_ES(f=None):
     if f is None:
         f = np.array([30.0, 600.0])
-        return feval(f, Atten_s_class1_conn_ES), f
+        return ISO_Plots.feval(f, Atten_s_class1_conn_ES), f
     elif type(f) is np.ndarray:
-        return feval(f, Atten_s_class1_conn_ES)
+        return ISO_Plots.feval(f, Atten_s_class1_conn_ES)
     elif f<30.0 or f>600.0:
         return None
     else:
@@ -442,9 +167,9 @@ def Atten_s_class1_conn_ES(f=None):
 def Atten_s_class2_conn_ES(f=None):
     if f is None:
         f = np.array([30.0, 600.0])
-        return feval(f, Atten_s_class2_conn_ES), f
+        return ISO_Plots.feval(f, Atten_s_class2_conn_ES), f
     elif type(f) is np.ndarray:
-        return feval(f, Atten_s_class2_conn_ES)
+        return ISO_Plots.feval(f, Atten_s_class2_conn_ES)
     elif f<30.0 or f>600.0:
         return None
     else:
@@ -463,9 +188,9 @@ def ILmax_cable(f=None):
     if f is None:
         # sample at 101 points, log spaced, across the range the limit is defined
         f = np.logspace(np.log10(1.0), np.log10(600.0), 101)
-        return feval(f, ILmax_cable), f
+        return ISO_Plots.feval(f, ILmax_cable), f
     elif type(f) is np.ndarray:
-        return feval(f, ILmax_cable)
+        return ISO_Plots.feval(f, ILmax_cable)
     elif f<1.0 or f>600.0:
         return None
     else:
@@ -478,9 +203,9 @@ def RLmax_cable(f=None):
     if f is None:
         # sample at the exact corner frequencies
         f = np.array([1.0, 10.0, 40.0, 130.0, 400.0, 600.0])
-        return feval(f, RLmax_cable), f
+        return ISO_Plots.feval(f, RLmax_cable), f
     elif type(f) is np.ndarray:
-        return feval(f, RLmax_cable)
+        return ISO_Plots.feval(f, RLmax_cable)
     elif f<1.0 or f>600.0:
         return None
     elif f<10.0:
@@ -499,9 +224,9 @@ def RLmax_cable(f=None):
 def LCLmax_cable(f=None):
     if f is None:
         f = np.array([10.0, 50.0, 600.0])
-        return feval(f, LCLmax_cable), f
+        return ISO_Plots.feval(f, LCLmax_cable), f
     elif type(f) is np.ndarray:
-        return feval(f, LCLmax_cable)
+        return ISO_Plots.feval(f, LCLmax_cable)
     elif f<10.0 or f>600.0:
         return None
     elif f<=50.0:
@@ -514,9 +239,9 @@ def LCLmax_cable(f=None):
 def LCTLmax_cable(f=None):
     if f is None:
         f = np.array([10.0, 50.0, 600.0])
-        return feval(f, LCTLmax_cable), f
+        return ISO_Plots.feval(f, LCTLmax_cable), f
     elif type(f) is np.ndarray:
-        return feval(f, LCTLmax_cable)
+        return ISO_Plots.feval(f, LCTLmax_cable)
     elif f<10.0 or f>600.0:
         return None
     elif f<=50.0:
@@ -529,9 +254,9 @@ def LCTLmax_cable(f=None):
 def Atten_c_class1_cable_ES(f=None):
     if f is None:
         f = np.array([30.0, 600.0])
-        return feval(f, Atten_c_class1_cable_ES), f
+        return ISO_Plots.feval(f, Atten_c_class1_cable_ES), f
     elif type(f) is np.ndarray:
-        return feval(f, Atten_c_class1_cable_ES)
+        return ISO_Plots.feval(f, Atten_c_class1_cable_ES)
     elif f<30.0 or f>600.0:
         return None
     else:
@@ -546,9 +271,9 @@ def Atten_c_class2_cable_ES(f=None):
 def Atten_s_class1_cable_ES(f=None):
     if f is None:
         f = np.array([30.0, 600.0])
-        return feval(f, Atten_s_class1_cable_ES), f
+        return ISO_Plots.feval(f, Atten_s_class1_cable_ES), f
     elif type(f) is np.ndarray:
-        return feval(f, Atten_s_class1_cable_ES)
+        return ISO_Plots.feval(f, Atten_s_class1_cable_ES)
     elif f<30.0 or f>600.0:
         return None
     else:
@@ -559,9 +284,9 @@ def Atten_s_class1_cable_ES(f=None):
 def Atten_s_class2_cable_ES(f=None):
     if f is None:
         f = np.array([30.0, 600.0])
-        return feval(f, Atten_s_class2_cable_ES), f
+        return ISO_Plots.feval(f, Atten_s_class2_cable_ES), f
     elif type(f) is np.ndarray:
-        return feval(f, Atten_s_class2_cable_ES)
+        return ISO_Plots.feval(f, Atten_s_class2_cable_ES)
     elif f<30.0 or f>600.0:
         return None
     else:
@@ -580,9 +305,9 @@ def ILmax_cable_assy(f=None):
     if f is None:
         # sample at 101 points, log spaced, across the range the limit is defined
         f = np.array([1.0, 600.0])
-        return feval(f, ILmax_cable_assy), f
+        return ISO_Plots.feval(f, ILmax_cable_assy), f
     elif type(f) is np.ndarray:
-        return feval(f, ILmax_cable_assy)
+        return ISO_Plots.feval(f, ILmax_cable_assy)
     else:
         return None
 
@@ -592,9 +317,9 @@ def RLmax_cable_assy(f=None):
     if f is None:
         # sample at the exact corner frequencies
         f = np.array([1.0, 130.0, 400.0, 600.0])
-        return feval(f, RLmax_cable_assy), f
+        return ISO_Plots.feval(f, RLmax_cable_assy), f
     elif type(f) is np.ndarray:
-        return feval(f, RLmax_cable_assy)
+        return ISO_Plots.feval(f, RLmax_cable_assy)
     elif f<1.0 or f>600.0:
         return None
     elif f<=130.0:
@@ -609,9 +334,9 @@ def RLmax_cable_assy(f=None):
 def LCLmax_cable_assy(f=None):
     if f is None:
         f = np.array([10.0, 50.0, 600.0])
-        return feval(f, LCLmax_cable_assy), f
+        return ISO_Plots.feval(f, LCLmax_cable_assy), f
     elif type(f) is np.ndarray:
-        return feval(f, LCLmax_cable_assy)
+        return ISO_Plots.feval(f, LCLmax_cable_assy)
     elif f<10.0 or f>600.0:
         return None
     elif f<=50.0:
@@ -630,9 +355,9 @@ def LCTLmax_cable_assy(f=None):
 def Atten_c_class1_cable_assy_ES(f=None):
     if f is None:
         f = np.array([30.0, 100.0, 600.0])
-        return feval(f, Atten_c_class1_cable_assy_ES), f
+        return ISO_Plots.feval(f, Atten_c_class1_cable_assy_ES), f
     elif type(f) is np.ndarray:
-        return feval(f, Atten_c_class1_cable_assy_ES)
+        return ISO_Plots.feval(f, Atten_c_class1_cable_assy_ES)
     elif f<30.0 or f>600.0:
         return None
     elif f<=100.0:
@@ -647,9 +372,9 @@ def Atten_c_class1_cable_assy_ES(f=None):
 def Atten_c_class2_cable_assy_ES(f=None):
     if f is None:
         f = np.array([30.0, 600.0])
-        return feval(f, Atten_c_class2_cable_assy_ES), f
+        return ISO_Plots.feval(f, Atten_c_class2_cable_assy_ES), f
     elif type(f) is np.ndarray:
-        return feval(f, Atten_c_class2_cable_assy_ES)
+        return ISO_Plots.feval(f, Atten_c_class2_cable_assy_ES)
     elif f<30.0 or f>600.0:
         return None
     else:
@@ -660,9 +385,9 @@ def Atten_c_class2_cable_assy_ES(f=None):
 def Atten_s_class1_cable_assy_ES(f=None):
     if f is None:
         f = np.array([30.0, 600.0])
-        return feval(f, Atten_s_class1_cable_assy_ES), f
+        return ISO_Plots.feval(f, Atten_s_class1_cable_assy_ES), f
     elif type(f) is np.ndarray:
-        return feval(f, Atten_s_class1_cable_assy_ES)
+        return ISO_Plots.feval(f, Atten_s_class1_cable_assy_ES)
     elif f<30.0 or f>600.0:
         return None
     else:
@@ -673,9 +398,9 @@ def Atten_s_class1_cable_assy_ES(f=None):
 def Atten_s_class2_cable_assy_ES(f=None):
     if f is None:
         f = np.array([30.0, 600.0])
-        return feval(f, Atten_s_class2_cable_assy_ES), f
+        return ISO_Plots.feval(f, Atten_s_class2_cable_assy_ES), f
     elif type(f) is np.ndarray:
-        return feval(f, Atten_s_class2_cable_assy_ES)
+        return ISO_Plots.feval(f, Atten_s_class2_cable_assy_ES)
     elif f<30.0 or f>600.0:
         return None
     else:
@@ -693,9 +418,9 @@ def ILmax_WCC_LSTB(f=None):
     if f is None:
         # sample at 101 points, log spaced, across the range the limit is defined
         f = np.logspace(np.log10(1.0), np.log10(600.0), 101)
-        return feval(f, ILmax_WCC_LSTB), f
+        return ISO_Plots.feval(f, ILmax_WCC_LSTB), f
     elif type(f) is np.ndarray:
-        return feval(f, ILmax_WCC_LSTB)
+        return ISO_Plots.feval(f, ILmax_WCC_LSTB)
     elif f<1.0 or f>600.0:
         return None
     else:
@@ -708,9 +433,9 @@ def ILmax_WCC_LSTA(f=None):
     if f is None:
         # sample at 101 points, log spaced, across the range the limit is defined
         f = np.logspace(np.log10(1.0), np.log10(600.0), 101)
-        return feval(f, ILmax_WCC_LSTA), f
+        return ISO_Plots.feval(f, ILmax_WCC_LSTA), f
     elif type(f) is np.ndarray:
-        return feval(f, ILmax_WCC_LSTA)
+        return ISO_Plots.feval(f, ILmax_WCC_LSTA)
     elif f<1.0 or f>600.0:
         return None
     else:
@@ -724,9 +449,9 @@ def RLmax_WCC(f=None):
     if f is None:
         # sample at the exact corner frequencies
         f = np.array([1.0, 10.0, 40.0, 130.0, 400.0, 600.0])
-        return feval(f, RLmax_WCC), f
+        return ISO_Plots.feval(f, RLmax_WCC), f
     elif type(f) is np.ndarray:
-        return feval(f, RLmax_WCC)
+        return ISO_Plots.feval(f, RLmax_WCC)
     elif f<1.0 or f>600.0:
         return None
     elif f<10.0:
@@ -746,9 +471,9 @@ def RLmax_WCC(f=None):
 def LCLmax_WCC(f=None):
     if f is None:
         f = np.array([10.0, 50.0, 600.0])
-        return feval(f, LCLmax_WCC), f
+        return ISO_Plots.feval(f, LCLmax_WCC), f
     elif type(f) is np.ndarray:
-        return feval(f, LCLmax_WCC)
+        return ISO_Plots.feval(f, LCLmax_WCC)
     elif f<10.0 or f>600.0:
         return None
     elif f<=50.0:
@@ -769,9 +494,9 @@ def PSANEXT_WCC_ES(f=None):
         f1 = np.array([1.0])
         f2 = np.logspace(np.log10(100.0), np.log10(600.0), 101)
         f = np.concatenate((f1,f2))
-        return feval(f, PSANEXT_WCC_ES), f
+        return ISO_Plots.feval(f, PSANEXT_WCC_ES), f
     elif type(f) is np.ndarray:
-        return feval(f, PSANEXT_WCC_ES)
+        return ISO_Plots.feval(f, PSANEXT_WCC_ES)
     elif f<1.0 or f>600.0:
         return None
     elif f<=100.0:
@@ -784,9 +509,9 @@ def PSANEXT_WCC_ES(f=None):
 def PSAACRF_WCC_ES(f=None):
     if f is None:
         f = np.array([1.0, 600.0])
-        return feval(f, PSAACRF_WCC_ES), f
+        return ISO_Plots.feval(f, PSAACRF_WCC_ES), f
     elif type(f) is np.ndarray:
-        return feval(f, PSAACRF_WCC_ES)
+        return ISO_Plots.feval(f, PSAACRF_WCC_ES)
     elif f<1.0 or f>600.0:
         return None
     else:
@@ -797,9 +522,9 @@ def PSAACRF_WCC_ES(f=None):
 def Atten_c_class1_WCC_ES(f=None):
     if f is None:
         f = np.array([30.0, 100.0, 600.0])
-        return feval(f, Atten_c_class1_WCC_ES), f
+        return ISO_Plots.feval(f, Atten_c_class1_WCC_ES), f
     elif type(f) is np.ndarray:
-        return feval(f, Atten_c_class1_WCC_ES)
+        return ISO_Plots.feval(f, Atten_c_class1_WCC_ES)
     elif f<30.0 or f>600.0:
         return None
     elif f<=100.0:
@@ -812,9 +537,9 @@ def Atten_c_class1_WCC_ES(f=None):
 def Atten_c_class2_WCC_ES(f=None):
     if f is None:
         f = np.array([30.0, 600.0])
-        return feval(f, Atten_c_class2_WCC_ES), f
+        return ISO_Plots.feval(f, Atten_c_class2_WCC_ES), f
     elif type(f) is np.ndarray:
-        return feval(f, Atten_c_class2_WCC_ES)
+        return ISO_Plots.feval(f, Atten_c_class2_WCC_ES)
     elif f<30.0 or f>600.0:
         return None
     else:
@@ -825,9 +550,9 @@ def Atten_c_class2_WCC_ES(f=None):
 def Atten_s_class1_WCC_ES(f=None):
     if f is None:
         f = np.array([30.0, 600.0])
-        return feval(f, Atten_s_class1_WCC_ES), f
+        return ISO_Plots.feval(f, Atten_s_class1_WCC_ES), f
     elif type(f) is np.ndarray:
-        return feval(f, Atten_s_class1_WCC_ES)
+        return ISO_Plots.feval(f, Atten_s_class1_WCC_ES)
     elif f<30.0 or f>600.0:
         return None
     else:
@@ -838,9 +563,9 @@ def Atten_s_class1_WCC_ES(f=None):
 def Atten_s_class2_WCC_ES(f=None):
     if f is None:
         f = np.array([30.0, 600.0])
-        return feval(f, Atten_s_class2_WCC_ES), f
+        return ISO_Plots.feval(f, Atten_s_class2_WCC_ES), f
     elif type(f) is np.ndarray:
-        return feval(f, Atten_s_class2_WCC_ES)
+        return ISO_Plots.feval(f, Atten_s_class2_WCC_ES)
     elif f<30.0 or f>600.0:
         return None
     else:
@@ -851,9 +576,9 @@ def Atten_s_class2_WCC_ES(f=None):
 def Zshield_max_ECU(f=None):
     if f is None:
         f = np.array([1.0, 60.0, 600.0])
-        return feval(f, Zshield_max_ECU), f
+        return ISO_Plots.feval(f, Zshield_max_ECU), f
     elif type(f) is np.ndarray:
-        return feval(f, Zshield_max_ECU)
+        return ISO_Plots.feval(f, Zshield_max_ECU)
     elif f<1.0 or f>600.0:
         return None
     elif f<=60.0:
@@ -866,79 +591,59 @@ def Zshield_max_ECU(f=None):
 def Zshield_max_ECU_DC(f=None):
     if f is None:
         f = np.array([-0.1, 0.1])
-        return feval(f, Zshield_max_ECU_DC), f
+        return ISO_Plots.feval(f, Zshield_max_ECU_DC), f
     elif type(f) is np.ndarray:
-        return feval(f, Zshield_max_ECU_DC)
+        return ISO_Plots.feval(f, Zshield_max_ECU_DC)
     else:
         return (10.0, 1.0e3)
-
-
-# ==============================================================================
-# Automatic Figure Numbering
-# ==============================================================================
-
-FIGURE = 1
-def next_figure():
-    global FIGURE
-    this_figure = FIGURE
-    FIGURE = FIGURE + 1
-    return this_figure
-
-def skip_figure(skip=1):
-    global FIGURE
-    FIGURE = FIGURE + skip
-    return None
 
 
 # ==============================================================================
 # Main Program Entry Point
 # ==============================================================================
 
+Plots = ISO_Plots("ISO 23870-10", "C:\\Projects\\Python\\ISO23870_Grapher\\output-10\\", ".png")
+
+
 # Whole communication channel plots
-skip_figure() # communication channel representation
-OPEN_Plot(ILmax_WCC_LSTB, abbr="IL", unit="dB", ylim=[0.0, 20.0], xypass=(0.75,0.35), xyfail=(0.55, 0.45), fig=next_figure(), figname="Insertion Loss (IL) Channel")
-OPEN_Plot(RLmax_WCC, abbr="RL", unit="dB", ylim=[10.0, 20.0], xypass=(0.60, 0.72), xyfail=(0.60, 0.45), fig=next_figure(), figname="Return Loss (RL) Channel")
-OPEN_Plot(LCLmax_WCC, abbr="LCL", unit="dB", ylim=[20.0, 45.0], xypass=(0.75,0.55), xyfail=(0.6, 0.35), fig=next_figure(), figname="Mode Conversion Loss (LCL) Channel")
-OPEN_Plot(LCLmax_WCC, abbr="LCTL", unit="dB", ylim=[20.0, 45.0], xypass=(0.75,0.55), xyfail=(0.6, 0.35), fig=next_figure(), figname="Mode Conversion Loss (LCTL) Channel")
-OPEN_Plot(PSANEXT_WCC_ES, abbr="PSANEXT", unit="dB", ylim=[30.0, 80.0], xypass=(0.75,0.55), xyfail=(0.6, 0.35), fig=next_figure(), figname="PSANEXT Channel")
-OPEN_Plot(PSAACRF_WCC_ES, abbr="PSAACRF", unit="dB", ylim=[20.0, 100.0], xypass=(0.65,0.5), xyfail=(0.45, 0.25), fig=next_figure(), figname="PSAACRF Channel")
-OPEN_Plot(Atten_c_class1_WCC_ES, abbr=r"$a_c$", unit="dB", ylim=[45.0, 70.0], xypass=[400.0, 61.5], xyfail=[120.0, 56.5], fig=next_figure(), figname="Coupling Attenuation Channel")
-OPEN_Plot(Atten_s_class1_WCC_ES, abbr=r"$a_s$", unit="dB", ylim=[22.0, 28.0],  xypass=[130.0, 25.3], xyfail=[130.0, 24.6], fig=next_figure(), figname="Screening Attenuation Channel")
+Plots.ISO_Skip_Figure() # communication channel representation
+Plots.ISO_Plot(ILmax_WCC_LSTB, abbr="IL", unit="dB", ylim=[0.0, 20.0], xypass=(0.75,0.35), xyfail=(0.55, 0.45), figname="Insertion Loss (IL) Channel")
+Plots.ISO_Plot(RLmax_WCC, abbr="RL", unit="dB", ylim=[10.0, 20.0], xypass=(0.60, 0.72), xyfail=(0.60, 0.45), figname="Return Loss (RL) Channel")
+Plots.ISO_Plot(LCLmax_WCC, abbr="LCL", unit="dB", ylim=[20.0, 45.0], xypass=(0.75,0.55), xyfail=(0.6, 0.35), figname="Mode Conversion Loss (LCL) Channel")
+Plots.ISO_Plot(LCLmax_WCC, abbr="LCTL", unit="dB", ylim=[20.0, 45.0], xypass=(0.75,0.55), xyfail=(0.6, 0.35), figname="Mode Conversion Loss (LCTL) Channel")
+Plots.ISO_Plot(PSANEXT_WCC_ES, abbr="PSANEXT", unit="dB", ylim=[30.0, 80.0], xypass=(0.75,0.55), xyfail=(0.6, 0.35), figname="PSANEXT Channel")
+Plots.ISO_Plot(PSAACRF_WCC_ES, abbr="PSAACRF", unit="dB", ylim=[20.0, 100.0], xypass=(0.65,0.5), xyfail=(0.45, 0.25), figname="PSAACRF Channel")
+Plots.ISO_Plot(Atten_c_class1_WCC_ES, abbr=r"$a_c$", unit="dB", ylim=[45.0, 70.0], xypass=[400.0, 61.5], xyfail=[120.0, 56.5], figname="Coupling Attenuation Channel")
+Plots.ISO_Plot(Atten_s_class1_WCC_ES, abbr=r"$a_s$", unit="dB", ylim=[22.0, 28.0],  xypass=[130.0, 25.3], xyfail=[130.0, 24.6], figname="Screening Attenuation Channel")
 
 # Cable assembly plots
-skip_figure() # cable assembly representation
-OPEN_Plot(RLmax_cable_assy, abbr="RL", unit="dB", ylim=[10.0, 30.0], xypass=[20.0, 23.0], xyfail=[20.0, 20.5], fig=next_figure(), figname="Return Loss (RL) Assembly")
-OPEN_Plot(LCLmax_cable_assy,  abbr="LCL", unit="dB", ylim=[20.0, 45.0], xypass=[140.0, 37.7], xyfail=[140.0, 30.5], fig=next_figure(), figname="Mode Conversion Loss (LCL) Assembly")
-OPEN_Plot(LCLmax_cable_assy,  abbr="LCTL", unit="dB", ylim=[20.0, 45.0], xypass=[140.0, 37.7], xyfail=[140.0, 30.5], fig=next_figure(), figname="Mode Conversion Loss (LCTL) Assembly")
-OPEN_Plot(Atten_c_class1_cable_assy_ES, abbr="$a_c$", unit="dB", ylim=[55,75], xypass=[140.0, 71.0], xyfail=[140.0, 65.0], fig=next_figure(), figname="Coupling Attenuation Assembly")
-OPEN_Plot(Atten_s_class1_cable_assy_ES, abbr="$a_s$", unit="dB", ylim=[20.0, 35.0], xypass=[140.0, 30.0], xyfail=[140.0, 26.0], fig=next_figure(), figname="Screening Attenuation Assembly")
+Plots.ISO_Skip_Figure() # cable assembly representation
+Plots.ISO_Plot(RLmax_cable_assy, abbr="RL", unit="dB", ylim=[10.0, 30.0], xypass=[20.0, 23.0], xyfail=[20.0, 20.5], figname="Return Loss (RL) Assembly")
+Plots.ISO_Plot(LCLmax_cable_assy,  abbr="LCL", unit="dB", ylim=[20.0, 45.0], xypass=[140.0, 37.7], xyfail=[140.0, 30.5], figname="Mode Conversion Loss (LCL) Assembly")
+Plots.ISO_Plot(LCLmax_cable_assy,  abbr="LCTL", unit="dB", ylim=[20.0, 45.0], xypass=[140.0, 37.7], xyfail=[140.0, 30.5], figname="Mode Conversion Loss (LCTL) Assembly")
+Plots.ISO_Plot(Atten_c_class1_cable_assy_ES, abbr="$a_c$", unit="dB", ylim=[55,75], xypass=[140.0, 71.0], xyfail=[140.0, 65.0], figname="Coupling Attenuation Assembly")
+Plots.ISO_Plot(Atten_s_class1_cable_assy_ES, abbr="$a_s$", unit="dB", ylim=[20.0, 35.0], xypass=[140.0, 30.0], xyfail=[140.0, 26.0], figname="Screening Attenuation Assembly")
 
 # Cable plots
-skip_figure()   # cable representation
-OPEN_Plot(ILmax_cable, abbr="IL", unit='dB/m', ylim=[0.0, 1.0], xypass=[150.0, 0.25], xyfail=[50.0, 0.4], fig=next_figure(), figname="Insertion Loss (IL) Cable")
-OPEN_Plot(RLmax_cable, abbr="RL", unit="dB", ylim=[10.0, 25.0], xypass=[80.0, 20.0], xyfail=[80.0, 17.5], fig=next_figure(), figname="Return Loss (RL) Cable")
-OPEN_Plot(LCLmax_cable, abbr="LCL", unit="dB", ylim=[25.0, 55.0], xypass=[140.0, 47.0], xyfail=[140.0, 36.0], fig=next_figure(), figname="Mode Conversion Loss (LCL) Cable")
-OPEN_Plot(LCTLmax_cable, abbr="LCTL", unit="dB", ylim=[25.0, 50.0], xypass=[140.0, 45.0], xyfail=[140.0, 34.0], fig=next_figure(), figname="Mode Conversion Loss (LCTL) Cable")
-OPEN_Plot(Atten_c_class1_cable_ES, abbr="$a_c$", unit="dB", ylim=[65.0, 75.0], xypass=[140.0, 71.0], xyfail=[140.0, 69.0], fig=next_figure(), figname="Coupling Attenuation Cable")
-OPEN_Plot(Atten_s_class1_cable_ES, abbr="$a_s$", unit="dB", ylim=[25.0, 45.0], xypass=[140.0, 36.7], xyfail=[140.0, 33.0], fig=next_figure(), figname="Screening Attenuation Cable")
+Plots.ISO_Skip_Figure()   # cable representation
+Plots.ISO_Plot(ILmax_cable, abbr="IL", unit='dB/m', ylim=[0.0, 1.0], xypass=[150.0, 0.25], xyfail=[50.0, 0.4], figname="Insertion Loss (IL) Cable")
+Plots.ISO_Plot(RLmax_cable, abbr="RL", unit="dB", ylim=[10.0, 25.0], xypass=[80.0, 20.0], xyfail=[80.0, 17.5], figname="Return Loss (RL) Cable")
+Plots.ISO_Plot(LCLmax_cable, abbr="LCL", unit="dB", ylim=[25.0, 55.0], xypass=[140.0, 47.0], xyfail=[140.0, 36.0], figname="Mode Conversion Loss (LCL) Cable")
+Plots.ISO_Plot(LCTLmax_cable, abbr="LCTL", unit="dB", ylim=[25.0, 50.0], xypass=[140.0, 45.0], xyfail=[140.0, 34.0], figname="Mode Conversion Loss (LCTL) Cable")
+Plots.ISO_Plot(Atten_c_class1_cable_ES, abbr="$a_c$", unit="dB", ylim=[65.0, 75.0], xypass=[140.0, 71.0], xyfail=[140.0, 69.0], figname="Coupling Attenuation Cable")
+Plots.ISO_Plot(Atten_s_class1_cable_ES, abbr="$a_s$", unit="dB", ylim=[25.0, 45.0], xypass=[140.0, 36.7], xyfail=[140.0, 33.0], figname="Screening Attenuation Cable")
 
 # Connector plots
-skip_figure()   # inline representation
-skip_figure()   # MDI representation
-OPEN_Plot(ILmax_conn, abbr="IL", unit="dB", ylim=[0.0, 0.25], xypass=(0.75,0.3), xyfail=(0.6,0.5), fig=next_figure(), figname="Insertion Loss (IL) Connector")
-OPEN_Plot(RLmax_conn, abbr="RL", unit="dB", ylim=[15.0,35.0], xypass=(0.60, 0.82), xyfail=(0.60, 0.68), fig=next_figure(), figname="Return Loss (RL) Connector")
-OPEN_Plot(LCLmax_conn, abbr="LCL", unit="dB", ylim=[30.0, 60.0], xypass=(0.7,0.55), xyfail=(0.55, 0.35), fig=next_figure(), figname="Mode Conversion Loss (LCL) Connector")
-OPEN_Plot(LCLmax_conn, abbr="LCTL", unit="dB", ylim=[30.0, 60.0], xypass=(0.7,0.55), xyfail=(0.55, 0.35), fig=next_figure(), figname="Mode Conversion Loss (LCTL) Connector")
-OPEN_Plot(PSANEXT_conn_ES, abbr="PSANEXT", unit="dB", ylim=[35.0,80.0], xypass=(0.4, 0.8), xyfail=(0.4, 0.5), fig=next_figure(), figname="PSANEXT Connector")
-OPEN_Plot(PSAFEXT_conn_ES, abbr="PSAFEXT", unit="dB", ylim=[20.0, 100.0], xypass=(0.4, 0.7), xyfail=(0.4, 0.4), fig=next_figure(), figname="PSAFEXT Connector")
-OPEN_Plot(Atten_c_class1_conn_ES, abbr="$a_c$", unit="dB", ylim=[50.0, 80.0], xypass=[400.0, 63.5], xyfail=[200.0, 56.5], fig=next_figure(), figname="Coupling Attenuation Connector")
-OPEN_Plot(Atten_s_class1_conn_ES, abbr="$a_s$", unit="dB", ylim=[10.0, 40.0], xypass=[150.0, 31.0], xyfail=[150.0, 26.0], fig=next_figure(), figname="Screening Attenuation Connector")
+Plots.ISO_Skip_Figure()   # inline representation
+Plots.ISO_Skip_Figure()   # MDI representation
+Plots.ISO_Plot(ILmax_conn, abbr="IL", unit="dB", ylim=[0.0, 0.25], xypass=(0.75,0.3), xyfail=(0.6,0.5), figname="Insertion Loss (IL) Connector")
+Plots.ISO_Plot(RLmax_conn, abbr="RL", unit="dB", ylim=[15.0,35.0], xypass=(0.60, 0.82), xyfail=(0.60, 0.68), figname="Return Loss (RL) Connector")
+Plots.ISO_Plot(LCLmax_conn, abbr="LCL", unit="dB", ylim=[30.0, 60.0], xypass=(0.7,0.55), xyfail=(0.55, 0.35), figname="Mode Conversion Loss (LCL) Connector")
+Plots.ISO_Plot(LCLmax_conn, abbr="LCTL", unit="dB", ylim=[30.0, 60.0], xypass=(0.7,0.55), xyfail=(0.55, 0.35), figname="Mode Conversion Loss (LCTL) Connector")
+Plots.ISO_Plot(PSANEXT_conn_ES, abbr="PSANEXT", unit="dB", ylim=[35.0,80.0], xypass=(0.4, 0.8), xyfail=(0.4, 0.5), figname="PSANEXT Connector")
+Plots.ISO_Plot(PSAFEXT_conn_ES, abbr="PSAFEXT", unit="dB", ylim=[20.0, 100.0], xypass=(0.4, 0.7), xyfail=(0.4, 0.4), figname="PSAFEXT Connector")
+Plots.ISO_Plot(Atten_c_class1_conn_ES, abbr="$a_c$", unit="dB", ylim=[50.0, 80.0], xypass=[400.0, 63.5], xyfail=[200.0, 56.5], figname="Coupling Attenuation Connector")
+Plots.ISO_Plot(Atten_s_class1_conn_ES, abbr="$a_s$", unit="dB", ylim=[10.0, 40.0], xypass=[150.0, 31.0], xyfail=[150.0, 26.0], figname="Screening Attenuation Connector")
 
-
-#OPEN_Plot(Zshield_max_ECU, abbr=r"$|Z_{shield}|$", unit=r"$\Omega$", ylim=[0, 80], xypass=[200, 20], xyfail=[120, 45], fig=next_figure(), figname="ECU Shield Impedance (AC)")
-#OPEN_Plot(Zshield_max_ECU_DC, is_dc=True, abbr=r"$R_{shield}$", unit=r"$\Omega$", ylim=[1.0, 10000.0], yticks=([1, 10, 100, 1000, 10000], ["1", "10", "100", "1k", "10k"]), xypass=[0.0, 100.0], xyfail=[0.0, 5.0], xyfail2=[0.0, 3000.0], fig=next_figure(), figname="ECU Shield Impedance (DC)")
-
-keyfilename = f"{FIG_DIR}{STD_NAME}_(E)_KEYS.txt"
-CreateKeyTable(keyfilename)
-AddFileToZip(keyfilename)
-CreateZipArchive()
+# Generate the key and zip files
+Plots.ISO_Wrapup()
