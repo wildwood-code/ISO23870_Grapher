@@ -1,6 +1,10 @@
 # Library for creating limit plots for ISO standards
 #   - Supports linear and logarithmic frequency axis
 #   - Supports pass/fail or "BETTER" annotation
+#   - Supports appendix numbering
+
+# Kerry S. Martin, martin@wild-wood.net
+# 2024-02-15
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -59,6 +63,7 @@ class ISO_Plots:
         self.fig_dir = fig_dir        # must end with "\\"
         self.fig_fmt = fig_fmt        # ".svg" or ".png"
         self.fig_num = 0
+        self.appendix = None
         self.key_table = []
         self.zip_file_list = []
 
@@ -85,6 +90,9 @@ class ISO_Plots:
         return self.fig_num
 
 
+    # ==========================================================================
+    # Handling of external files
+    # ==========================================================================
 
     # add external file that will be zipped up with the plots
     def ISO_Add_External_File(self, filename, skip=1):
@@ -97,12 +105,43 @@ class ISO_Plots:
         self.__AddFileToZip(filename)
         self.ISO_Skip_Figure(skip)
 
+
+    # ==========================================================================
+    # Handling of appendices
+    # ==========================================================================
+
+    def ISO_Start_Appendix(self, appendix=None):
+        """Starts an appendix with a fresh figure numbering system
+
+        Args:
+            appendix: Appendix letter (e.g., "A", "B") Defaults to None.
+
+            If the appendix parameter is None, it will auto-generate the appendix
+            label, starting with "A" for the first call. Subsequent calls will
+            use the next capital letter (i.e., "A" -> "B" -> "C", etc.)
+            Appendix will always be an uppercase single letter (first letter is
+            used if more than one is passed). Currently, no letters are skipped.
+        """
+        if appendix is None:
+            if self.appendix is None:
+                self.appendix = "A"
+            else:
+                self.appendix = chr(ord(self.appendix[0])+1)  # next character
+        else:
+            self.appendix = appendix.upper()[0]  # only first letter is used
+
+        self.fig_num = 0    # start a new figure numbering counter when starting a new appendix
+
+
     # ==========================================================================
     # Generate key table
     # ==========================================================================
 
     def __AddKeyToFigure(self, fig, key, value):
-        line = f'FIG{fig:03}\t{key}\t{value}\n'
+        if self.appendix is None:
+            line = f'FIG-{fig:03}\t{key}\t{value}\n'
+        else:
+            line = f'FIG-{self.appendix}.{fig:03}\t{key}\t{value}\n'
         self.key_table.append(line)
 
 
@@ -139,10 +178,16 @@ class ISO_Plots:
     # ==========================================================================
 
     def __FigSave(self, fig, figname=None):
-        if figname is not None:
-            savename = f"{self.fig_dir}FIG-{fig:03}_{self.std_name}_(E)_Ed1 {figname}{self.fig_fmt}"
+        if self.appendix is None:
+            if figname is not None:
+                savename = f"{self.fig_dir}FIG-{fig:03}_{self.std_name}_(E)_Ed1 {figname}{self.fig_fmt}"
+            else:
+                savename = f"{self.fig_dir}FIG-{fig:03}_{self.std_name}_(E)_Ed1{self.fig_fmt}"
         else:
-            savename = f"{self.fig_dir}FIG-{fig:03}_{self.std_name}_(E)_Ed1{self.fig_fmt}"
+            if figname is not None:
+                savename = f"{self.fig_dir}FIG-{self.appendix}.{fig:03}_{self.std_name}_(E)_Ed1 {figname}{self.fig_fmt}"
+            else:
+                savename = f"{self.fig_dir}FIG-{self.appendix}.{fig:03}_{self.std_name}_(E)_Ed1{self.fig_fmt}"
         plt.savefig(savename)
         self.__AddFileToZip(savename)
 
@@ -268,8 +313,6 @@ class ISO_Plots:
             vunit = f'LIMIT ({unit})'
         else:
             vunit = f'{abbr}'
-        if fig is not None:
-            self.__AddKeyToFigure(fig, "Y", vunit)
 
         plt.gca().xaxis.set_major_formatter(ScalarFormatter())
         plt.grid(visible=True, which='both')
@@ -315,6 +358,8 @@ class ISO_Plots:
             fig = self.__next_figure()
         else:
             self.fig_num = fig
+
+        self.__AddKeyToFigure(fig, "Y", vunit)
 
         self.__FigSave(fig, figname)
 
@@ -366,3 +411,6 @@ class ISO_Plots:
             raise Exception("Invalid type for x. Accepts float and ndarray of float")
 
         return y
+
+
+# End of file

@@ -1,16 +1,9 @@
-# ISO 23870 Physical Layer - Cables, Connectors, Cable Assemblies, and Communication Channel
+# ISO 23870-3 Physical Layer - Single data channel coupling connector
 # Graph Generator for the limits in the standard
 #
 # Limits are from "TC9" OPEN Alliance Channel and Component Requirements for 1000BASE-T1 Link Segment Type A (LSTA) Version 2.0
 # or IEEE 802.3
-#    cable limits
 #    connector limits
-#    cable assembly limits
-#    communication channel limits
-#
-#  SCC = Standalone Communication Channel = 2 PCB connectors, cable, and up to 4 inline connectors
-#  WCC = Whole Communication Channel = SCC + PCB end connectors
-#  ES = Environmental System = power and signal cables for other applications
 #
 # Python code is written by Kerry S. Martin (company John Deere) for his work
 # on JWG 16 to write the physical layer standards for ISO 23870
@@ -189,7 +182,13 @@ Plots.ISO_Plot(ILmax_conn, abbr="IL", unit="dB", ylim=[0.0, 0.25], xypass=(0.75,
 Plots.ISO_Plot(RLmax_conn, abbr="RL", unit="dB", ylim=[15.0,35.0], xypass=(0.60, 0.82), xyfail=(0.60, 0.68), figname="Return Loss (RL) Connector")
 Plots.ISO_Plot(LCLmax_conn, abbr="LCL", unit="dB", ylim=[30.0, 60.0], xypass=(0.7,0.55), xyfail=(0.55, 0.35), figname="Mode Conversion Loss (LCL) Connector")
 Plots.ISO_Plot(LCLmax_conn, abbr="LCTL", unit="dB", ylim=[30.0, 60.0], xypass=(0.7,0.55), xyfail=(0.55, 0.35), figname="Mode Conversion Loss (LCTL) Connector")
-Plots.ISO_Plot(Atten_c_class1_conn_ES, abbr="$a_c$", unit="dB", ylim=[50.0, 80.0], xypass=[400.0, 63.5], xyfail=[200.0, 56.5], figname="Coupling Attenuation Connector")
-Plots.ISO_Plot(Atten_s_class1_conn_ES, abbr="$a_s$", unit="dB", ylim=[10.0, 40.0], xypass=[150.0, 31.0], xyfail=[150.0, 26.0], figname="Screening Attenuation Connector")
+Plots.ISO_Plot(Atten_c_class1_conn_ES, abbr="$a_\\mathrm{c}$", unit="dB", ylim=[50.0, 80.0], xypass=[400.0, 63.5], xyfail=[200.0, 56.5], figname="Coupling Attenuation Connector")
+Plots.ISO_Plot(Atten_s_class1_conn_ES, abbr="$a_\\mathrm{s}$", unit="dB", ylim=[10.0, 40.0], xypass=[150.0, 31.0], xyfail=[150.0, 26.0], figname="Screening Attenuation Connector")
+
+# Appendix
+Plots.ISO_Start_Appendix()
+Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-3\\FIG-A.001_ISO_23870-10_(E)_Ed1 Qualification test sequence.png")
+Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-3\\FIG-A.002_ISO_23870-10_(E)_Ed1 Qualification test lot B detail.png")
+Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-3\\FIG-A.003_ISO_23870-10_(E)_Ed1 Qualification test 1000BASE-T1 measurement sequence.png")
 
 Plots.ISO_Wrapup()

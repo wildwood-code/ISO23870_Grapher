@@ -1,4 +1,4 @@
-# ISO 23870 Physical Layer - Cables, Connectors, Cable Assemblies, and Communication Channel
+# ISO 23870-10 Physical Layer - Cables, Connectors, Cable Assemblies, and Communication Channel
 # Graph Generator for the limits in the standard
 #
 # Limits are from "TC9" OPEN Alliance Channel and Component Requirements for 1000BASE-T1 Link Segment Type A (LSTA) Version 2.0
@@ -606,44 +606,44 @@ Plots = ISO_Plots("ISO 23870-10", "C:\\Projects\\Python\\ISO23870_Grapher\\outpu
 
 
 # Whole communication channel plots
-Plots.ISO_Skip_Figure() # communication channel representation
+Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-10\\FIG-001_ISO_23870-10_(E)_Ed1 Comm Channel Representation.png")
 Plots.ISO_Plot(ILmax_WCC_LSTB, abbr="IL", unit="dB", ylim=[0.0, 20.0], xypass=(0.75,0.35), xyfail=(0.55, 0.45), figname="Insertion Loss (IL) Channel")
 Plots.ISO_Plot(RLmax_WCC, abbr="RL", unit="dB", ylim=[10.0, 20.0], xypass=(0.60, 0.72), xyfail=(0.60, 0.45), figname="Return Loss (RL) Channel")
 Plots.ISO_Plot(LCLmax_WCC, abbr="LCL", unit="dB", ylim=[20.0, 45.0], xypass=(0.75,0.55), xyfail=(0.6, 0.35), figname="Mode Conversion Loss (LCL) Channel")
 Plots.ISO_Plot(LCLmax_WCC, abbr="LCTL", unit="dB", ylim=[20.0, 45.0], xypass=(0.75,0.55), xyfail=(0.6, 0.35), figname="Mode Conversion Loss (LCTL) Channel")
 Plots.ISO_Plot(PSANEXT_WCC_ES, abbr="PSANEXT", unit="dB", ylim=[30.0, 80.0], xypass=(0.75,0.55), xyfail=(0.6, 0.35), figname="PSANEXT Channel")
 Plots.ISO_Plot(PSAACRF_WCC_ES, abbr="PSAACRF", unit="dB", ylim=[20.0, 100.0], xypass=(0.65,0.5), xyfail=(0.45, 0.25), figname="PSAACRF Channel")
-Plots.ISO_Plot(Atten_c_class1_WCC_ES, abbr=r"$a_c$", unit="dB", ylim=[45.0, 70.0], xypass=[400.0, 61.5], xyfail=[120.0, 56.5], figname="Coupling Attenuation Channel")
-Plots.ISO_Plot(Atten_s_class1_WCC_ES, abbr=r"$a_s$", unit="dB", ylim=[22.0, 28.0],  xypass=[130.0, 25.3], xyfail=[130.0, 24.6], figname="Screening Attenuation Channel")
+Plots.ISO_Plot(Atten_c_class1_WCC_ES, abbr="$a_\\mathrm{c}$", unit="dB", ylim=[45.0, 70.0], xypass=[400.0, 61.5], xyfail=[120.0, 56.5], figname="Coupling Attenuation Channel")
+Plots.ISO_Plot(Atten_s_class1_WCC_ES, abbr="$a_\\mathrm{s}$", unit="dB", ylim=[22.0, 28.0],  xypass=[130.0, 25.3], xyfail=[130.0, 24.6], figname="Screening Attenuation Channel")
 
 # Cable assembly plots
-Plots.ISO_Skip_Figure() # cable assembly representation
+Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-10\\FIG-010_ISO_23870-10_(E)_Ed1 Cable Assembly Representation.png")
 Plots.ISO_Plot(RLmax_cable_assy, abbr="RL", unit="dB", ylim=[10.0, 30.0], xypass=[20.0, 23.0], xyfail=[20.0, 20.5], figname="Return Loss (RL) Assembly")
 Plots.ISO_Plot(LCLmax_cable_assy,  abbr="LCL", unit="dB", ylim=[20.0, 45.0], xypass=[140.0, 37.7], xyfail=[140.0, 30.5], figname="Mode Conversion Loss (LCL) Assembly")
 Plots.ISO_Plot(LCLmax_cable_assy,  abbr="LCTL", unit="dB", ylim=[20.0, 45.0], xypass=[140.0, 37.7], xyfail=[140.0, 30.5], figname="Mode Conversion Loss (LCTL) Assembly")
-Plots.ISO_Plot(Atten_c_class1_cable_assy_ES, abbr="$a_c$", unit="dB", ylim=[55,75], xypass=[140.0, 71.0], xyfail=[140.0, 65.0], figname="Coupling Attenuation Assembly")
-Plots.ISO_Plot(Atten_s_class1_cable_assy_ES, abbr="$a_s$", unit="dB", ylim=[20.0, 35.0], xypass=[140.0, 30.0], xyfail=[140.0, 26.0], figname="Screening Attenuation Assembly")
+Plots.ISO_Plot(Atten_c_class1_cable_assy_ES, abbr="$a_\\mathrm{c}$", unit="dB", ylim=[55,75], xypass=[140.0, 71.0], xyfail=[140.0, 65.0], figname="Coupling Attenuation Assembly")
+Plots.ISO_Plot(Atten_s_class1_cable_assy_ES, abbr="$a_\\mathrm{s}$", unit="dB", ylim=[20.0, 35.0], xypass=[140.0, 30.0], xyfail=[140.0, 26.0], figname="Screening Attenuation Assembly")
 
 # Cable plots
-Plots.ISO_Skip_Figure()   # cable representation
+Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-10\\FIG-016_ISO_23870-10_(E)_Ed1 Cable Representation.png")
 Plots.ISO_Plot(ILmax_cable, abbr="IL", unit='dB/m', ylim=[0.0, 1.0], xypass=[150.0, 0.25], xyfail=[50.0, 0.4], figname="Insertion Loss (IL) Cable")
 Plots.ISO_Plot(RLmax_cable, abbr="RL", unit="dB", ylim=[10.0, 25.0], xypass=[80.0, 20.0], xyfail=[80.0, 17.5], figname="Return Loss (RL) Cable")
 Plots.ISO_Plot(LCLmax_cable, abbr="LCL", unit="dB", ylim=[25.0, 55.0], xypass=[140.0, 47.0], xyfail=[140.0, 36.0], figname="Mode Conversion Loss (LCL) Cable")
 Plots.ISO_Plot(LCTLmax_cable, abbr="LCTL", unit="dB", ylim=[25.0, 50.0], xypass=[140.0, 45.0], xyfail=[140.0, 34.0], figname="Mode Conversion Loss (LCTL) Cable")
-Plots.ISO_Plot(Atten_c_class1_cable_ES, abbr="$a_c$", unit="dB", ylim=[65.0, 75.0], xypass=[140.0, 71.0], xyfail=[140.0, 69.0], figname="Coupling Attenuation Cable")
-Plots.ISO_Plot(Atten_s_class1_cable_ES, abbr="$a_s$", unit="dB", ylim=[25.0, 45.0], xypass=[140.0, 36.7], xyfail=[140.0, 33.0], figname="Screening Attenuation Cable")
+Plots.ISO_Plot(Atten_c_class1_cable_ES, abbr="$a_\\mathrm{c}$", unit="dB", ylim=[65.0, 75.0], xypass=[140.0, 71.0], xyfail=[140.0, 69.0], figname="Coupling Attenuation Cable")
+Plots.ISO_Plot(Atten_s_class1_cable_ES, abbr="$a_\\mathrm{s}$", unit="dB", ylim=[25.0, 45.0], xypass=[140.0, 36.7], xyfail=[140.0, 33.0], figname="Screening Attenuation Cable")
 
 # Connector plots
-Plots.ISO_Skip_Figure()   # inline representation
-Plots.ISO_Skip_Figure()   # MDI representation
+Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-10\\FIG-023_ISO_23870-10_(E)_Ed1 Inline Representation.png")
+Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-10\\FIG-024_ISO_23870-10_(E)_Ed1 MDI Representation.png")
 Plots.ISO_Plot(ILmax_conn, abbr="IL", unit="dB", ylim=[0.0, 0.25], xypass=(0.75,0.3), xyfail=(0.6,0.5), figname="Insertion Loss (IL) Connector")
 Plots.ISO_Plot(RLmax_conn, abbr="RL", unit="dB", ylim=[15.0,35.0], xypass=(0.60, 0.82), xyfail=(0.60, 0.68), figname="Return Loss (RL) Connector")
 Plots.ISO_Plot(LCLmax_conn, abbr="LCL", unit="dB", ylim=[30.0, 60.0], xypass=(0.7,0.55), xyfail=(0.55, 0.35), figname="Mode Conversion Loss (LCL) Connector")
 Plots.ISO_Plot(LCLmax_conn, abbr="LCTL", unit="dB", ylim=[30.0, 60.0], xypass=(0.7,0.55), xyfail=(0.55, 0.35), figname="Mode Conversion Loss (LCTL) Connector")
 Plots.ISO_Plot(PSANEXT_conn_ES, abbr="PSANEXT", unit="dB", ylim=[35.0,80.0], xypass=(0.4, 0.8), xyfail=(0.4, 0.5), figname="PSANEXT Connector")
 Plots.ISO_Plot(PSAFEXT_conn_ES, abbr="PSAFEXT", unit="dB", ylim=[20.0, 100.0], xypass=(0.4, 0.7), xyfail=(0.4, 0.4), figname="PSAFEXT Connector")
-Plots.ISO_Plot(Atten_c_class1_conn_ES, abbr="$a_c$", unit="dB", ylim=[50.0, 80.0], xypass=[400.0, 63.5], xyfail=[200.0, 56.5], figname="Coupling Attenuation Connector")
-Plots.ISO_Plot(Atten_s_class1_conn_ES, abbr="$a_s$", unit="dB", ylim=[10.0, 40.0], xypass=[150.0, 31.0], xyfail=[150.0, 26.0], figname="Screening Attenuation Connector")
+Plots.ISO_Plot(Atten_c_class1_conn_ES, abbr="$a_\\mathrm{c}$", unit="dB", ylim=[50.0, 80.0], xypass=[400.0, 63.5], xyfail=[200.0, 56.5], figname="Coupling Attenuation Connector")
+Plots.ISO_Plot(Atten_s_class1_conn_ES, abbr="$a_\\mathrm{s}$", unit="dB", ylim=[10.0, 40.0], xypass=[150.0, 31.0], xyfail=[150.0, 26.0], figname="Screening Attenuation Connector")
 
 # Generate the key and zip files
 Plots.ISO_Wrapup()
