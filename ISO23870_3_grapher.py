@@ -42,7 +42,7 @@ import locale
 # ==============================================================================
 
 # Standard definitions
-STD_NAME = "ISO_23870-10"
+STD_NAME = "ISO_23870-3"
 
 # Key table
 KEY_TABLE = []
@@ -51,7 +51,7 @@ KEY_TABLE = []
 ZIP_FILE_LIST = []
 
 # Output directory and format
-FIG_DIR = "C:\\Projects\\Python\\ISO23870_Grapher\\output\\"     # must end with backslash
+FIG_DIR = "C:\\Projects\\Python\\ISO23870_Grapher\\output-3\\"     # must end with backslash
 FIG_FORMAT = ".png"   # .png or .svg    # must begin with period
 
 
@@ -894,49 +894,17 @@ def skip_figure(skip=1):
 # Main Program Entry Point
 # ==============================================================================
 
-# Whole communication channel plots
-skip_figure() # communication channel representation
-OPEN_Plot(ILmax_WCC_LSTB, abbr="IL", unit="dB", ylim=[0.0, 20.0], xypass=(0.75,0.35), xyfail=(0.55, 0.45), fig=next_figure(), figname="Insertion Loss (IL) Channel")
-OPEN_Plot(RLmax_WCC, abbr="RL", unit="dB", ylim=[10.0, 20.0], xypass=(0.60, 0.72), xyfail=(0.60, 0.45), fig=next_figure(), figname="Return Loss (RL) Channel")
-OPEN_Plot(LCLmax_WCC, abbr="LCL", unit="dB", ylim=[20.0, 45.0], xypass=(0.75,0.55), xyfail=(0.6, 0.35), fig=next_figure(), figname="Mode Conversion Loss (LCL) Channel")
-OPEN_Plot(LCLmax_WCC, abbr="LCTL", unit="dB", ylim=[20.0, 45.0], xypass=(0.75,0.55), xyfail=(0.6, 0.35), fig=next_figure(), figname="Mode Conversion Loss (LCTL) Channel")
-OPEN_Plot(PSANEXT_WCC_ES, abbr="PSANEXT", unit="dB", ylim=[30.0, 80.0], xypass=(0.75,0.55), xyfail=(0.6, 0.35), fig=next_figure(), figname="PSANEXT Channel")
-OPEN_Plot(PSAACRF_WCC_ES, abbr="PSAACRF", unit="dB", ylim=[20.0, 100.0], xypass=(0.65,0.5), xyfail=(0.45, 0.25), fig=next_figure(), figname="PSAACRF Channel")
-OPEN_Plot(Atten_c_class1_WCC_ES, abbr=r"$a_c$", unit="dB", ylim=[45.0, 70.0], xypass=[400.0, 61.5], xyfail=[120.0, 56.5], fig=next_figure(), figname="Coupling Attenuation Channel")
-OPEN_Plot(Atten_s_class1_WCC_ES, abbr=r"$a_s$", unit="dB", ylim=[22.0, 28.0],  xypass=[130.0, 25.3], xyfail=[130.0, 24.6], fig=next_figure(), figname="Screening Attenuation Channel")
-
-# Cable assembly plots
-skip_figure() # cable assembly representation
-OPEN_Plot(RLmax_cable_assy, abbr="RL", unit="dB", ylim=[10.0, 30.0], xypass=[20.0, 23.0], xyfail=[20.0, 20.5], fig=next_figure(), figname="Return Loss (RL) Assembly")
-OPEN_Plot(LCLmax_cable_assy,  abbr="LCL", unit="dB", ylim=[20.0, 45.0], xypass=[140.0, 37.7], xyfail=[140.0, 30.5], fig=next_figure(), figname="Mode Conversion Loss (LCL) Assembly")
-OPEN_Plot(LCLmax_cable_assy,  abbr="LCTL", unit="dB", ylim=[20.0, 45.0], xypass=[140.0, 37.7], xyfail=[140.0, 30.5], fig=next_figure(), figname="Mode Conversion Loss (LCTL) Assembly")
-OPEN_Plot(Atten_c_class1_cable_assy_ES, abbr="$a_c$", unit="dB", ylim=[55,75], xypass=[140.0, 71.0], xyfail=[140.0, 65.0], fig=next_figure(), figname="Coupling Attenuation Assembly")
-OPEN_Plot(Atten_s_class1_cable_assy_ES, abbr="$a_s$", unit="dB", ylim=[20.0, 35.0], xypass=[140.0, 30.0], xyfail=[140.0, 26.0], fig=next_figure(), figname="Screening Attenuation Assembly")
-
-# Cable plots
-skip_figure()   # cable representation
-OPEN_Plot(ILmax_cable, abbr="IL", unit='dB/m', ylim=[0.0, 1.0], xypass=[150.0, 0.25], xyfail=[50.0, 0.4], fig=next_figure(), figname="Insertion Loss (IL) Cable")
-OPEN_Plot(RLmax_cable, abbr="RL", unit="dB", ylim=[10.0, 25.0], xypass=[80.0, 20.0], xyfail=[80.0, 17.5], fig=next_figure(), figname="Return Loss (RL) Cable")
-OPEN_Plot(LCLmax_cable, abbr="LCL", unit="dB", ylim=[25.0, 55.0], xypass=[140.0, 47.0], xyfail=[140.0, 36.0], fig=next_figure(), figname="Mode Conversion Loss (LCL) Cable")
-OPEN_Plot(LCTLmax_cable, abbr="LCTL", unit="dB", ylim=[25.0, 50.0], xypass=[140.0, 45.0], xyfail=[140.0, 34.0], fig=next_figure(), figname="Mode Conversion Loss (LCTL) Cable")
-OPEN_Plot(Atten_c_class1_cable_ES, abbr="$a_c$", unit="dB", ylim=[65.0, 75.0], xypass=[140.0, 71.0], xyfail=[140.0, 69.0], fig=next_figure(), figname="Coupling Attenuation Cable")
-OPEN_Plot(Atten_s_class1_cable_ES, abbr="$a_s$", unit="dB", ylim=[25.0, 45.0], xypass=[140.0, 36.7], xyfail=[140.0, 33.0], fig=next_figure(), figname="Screening Attenuation Cable")
+# skip the figures occurring before the plots
+skip_figure(8)
 
 # Connector plots
-skip_figure()   # inline representation
-skip_figure()   # MDI representation
 OPEN_Plot(ILmax_conn, abbr="IL", unit="dB", ylim=[0.0, 0.25], xypass=(0.75,0.3), xyfail=(0.6,0.5), fig=next_figure(), figname="Insertion Loss (IL) Connector")
 OPEN_Plot(RLmax_conn, abbr="RL", unit="dB", ylim=[15.0,35.0], xypass=(0.60, 0.82), xyfail=(0.60, 0.68), fig=next_figure(), figname="Return Loss (RL) Connector")
 OPEN_Plot(LCLmax_conn, abbr="LCL", unit="dB", ylim=[30.0, 60.0], xypass=(0.7,0.55), xyfail=(0.55, 0.35), fig=next_figure(), figname="Mode Conversion Loss (LCL) Connector")
 OPEN_Plot(LCLmax_conn, abbr="LCTL", unit="dB", ylim=[30.0, 60.0], xypass=(0.7,0.55), xyfail=(0.55, 0.35), fig=next_figure(), figname="Mode Conversion Loss (LCTL) Connector")
-OPEN_Plot(PSANEXT_conn_ES, abbr="PSANEXT", unit="dB", ylim=[35.0,80.0], xypass=(0.4, 0.8), xyfail=(0.4, 0.5), fig=next_figure(), figname="PSANEXT Connector")
-OPEN_Plot(PSAFEXT_conn_ES, abbr="PSAFEXT", unit="dB", ylim=[20.0, 100.0], xypass=(0.4, 0.7), xyfail=(0.4, 0.4), fig=next_figure(), figname="PSAFEXT Connector")
 OPEN_Plot(Atten_c_class1_conn_ES, abbr="$a_c$", unit="dB", ylim=[50.0, 80.0], xypass=[400.0, 63.5], xyfail=[200.0, 56.5], fig=next_figure(), figname="Coupling Attenuation Connector")
 OPEN_Plot(Atten_s_class1_conn_ES, abbr="$a_s$", unit="dB", ylim=[10.0, 40.0], xypass=[150.0, 31.0], xyfail=[150.0, 26.0], fig=next_figure(), figname="Screening Attenuation Connector")
 
-
-#OPEN_Plot(Zshield_max_ECU, abbr=r"$|Z_{shield}|$", unit=r"$\Omega$", ylim=[0, 80], xypass=[200, 20], xyfail=[120, 45], fig=next_figure(), figname="ECU Shield Impedance (AC)")
-#OPEN_Plot(Zshield_max_ECU_DC, is_dc=True, abbr=r"$R_{shield}$", unit=r"$\Omega$", ylim=[1.0, 10000.0], yticks=([1, 10, 100, 1000, 10000], ["1", "10", "100", "1k", "10k"]), xypass=[0.0, 100.0], xyfail=[0.0, 5.0], xyfail2=[0.0, 3000.0], fig=next_figure(), figname="ECU Shield Impedance (DC)")
 
 keyfilename = f"{FIG_DIR}{STD_NAME}_(E)_KEYS.txt"
 CreateKeyTable(keyfilename)
