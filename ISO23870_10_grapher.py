@@ -97,7 +97,9 @@ def LCTLmax_conn(f=None):
 # return value is in dB
 def PSANEXT_conn_ES(f=None):
     if f is None:
-        f = np.array([1.0, 100.0, 600.0])
+        f1 = np.array([1.0])
+        f2 = np.logspace(np.log10(100.0), np.log10(600.0), 101)
+        f = np.concatenate((f1,f2))
         return ISO_Plots.feval(f, PSANEXT_conn_ES), f
     elif type(f) is np.ndarray:
         return ISO_Plots.feval(f, PSANEXT_conn_ES)
