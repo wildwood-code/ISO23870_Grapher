@@ -17,6 +17,7 @@ import locale
 
 # class decorator
 def static_init(cls):
+    x = getattr(cls, "static_init", None)
     if getattr(cls, "static_init", None):
         cls.static_init()
     return cls
