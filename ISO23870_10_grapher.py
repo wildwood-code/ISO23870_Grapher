@@ -354,7 +354,7 @@ def LCTLmax_cable_assy(f=None):
 # return value is in dB
 def Atten_c_class1_cable_assy_ES(f=None):
     if f is None:
-        f = np.array([30.0, 100.0, 600.0])
+        f = np.array([30.0, 100.0, 400.0, 600.0])
         return ISO_Plots.feval(f, Atten_c_class1_cable_assy_ES), f
     elif type(f) is np.ndarray:
         return ISO_Plots.feval(f, Atten_c_class1_cable_assy_ES)
