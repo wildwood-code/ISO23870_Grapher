@@ -604,7 +604,7 @@ def Zshield_max_ECU_DC(f=None):
 # Main Program Entry Point
 # ==============================================================================
 
-Plots = ISO_Plots("ISO 23870-10", "C:\\Projects\\Python\\ISO23870_Grapher\\output-10\\", ".png")
+Plots = ISO_Plots("ISO 23870-10", "C:\\Projects\\Python\\ISO23870_Grapher\\output-10\\", ".svg")
 
 
 # Whole communication channel plots

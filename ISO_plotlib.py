@@ -17,7 +17,6 @@ import locale
 
 # class decorator
 def static_init(cls):
-    x = getattr(cls, "static_init", None)
     if getattr(cls, "static_init", None):
         cls.static_init()
     return cls
@@ -318,32 +317,59 @@ class ISO_Plots:
         plt.gca().xaxis.set_major_formatter(ScalarFormatter())
         plt.grid(visible=True, which='both')
 
+        key_num = 1
+        key_pass = None
+        key_fail = None
+        key_better = None
+
         if xypass is not None:
             if type(xypass) is tuple:
+                key_pass = key_num
                 x, y = xypass
-                ax.text(x, y, "(1)", transform=trans, weight="bold", size=16, ha='center', va='center', color='gray')
+                ax.text(x, y, f"({key_pass})", transform=trans, weight="bold", size=16, ha='center', va='center', color='gray')
+                key_num += 1
             elif type(xypass) is list:
+                key_pass = key_num
                 x, y = xypass[0], xypass[1]
-                ax.text(x, y, "(1)", weight="bold", size=16, ha='center', va='center', color='gray')
+                ax.text(x, y, f"({key_pass})", weight="bold", size=16, ha='center', va='center', color='gray')
+                key_num += 1
+            else:
+                raise Exception("Unsupported 'xypass'")
 
         if xyfail is not None:
             if type(xyfail) is tuple:
+                key_fail = key_num
                 x, y = xyfail
-                ax.text(x, y, "(2)", transform=trans, weight="bold", size=16, ha='center', va='center', color='gray')
+                ax.text(x, y, f"({key_fail})", transform=trans, weight="bold", size=16, ha='center', va='center', color='gray')
+                key_num += 1
             elif type(xyfail) is list:
+                key_fail = key_num
                 x, y = xyfail[0], xyfail[1]
-                ax.text(x, y, "(2)", weight="bold", size=16, ha='center', va='center', color='gray')
+                ax.text(x, y, f"({key_fail})", weight="bold", size=16, ha='center', va='center', color='gray')
+                key_num += 1
+            else:
+                raise Exception("Unsupported 'xyfail'")
 
         if xyfail2 is not None:
             if type(xyfail2) is tuple:
+                if key_fail is None:
+                    key_fail = key_num
+                    key_num += 1
                 x, y = xyfail2
-                ax.text(x, y, "(2)", transform=trans, weight="bold", size=16, ha='center', va='center', color='gray')
+                ax.text(x, y, f"({key_fail})", transform=trans, weight="bold", size=16, ha='center', va='center', color='gray')
             elif type(xyfail2) is list:
+                if key_fail is None:
+                    key_fail = key_num
+                    key_num += 1
                 x, y = xyfail2[0], xyfail2[1]
-                ax.text(x, y, "(2)", weight="bold", size=16, ha='center', va='center', color='gray')
+                ax.text(x, y, f"({key_fail})", weight="bold", size=16, ha='center', va='center', color='gray')
+            else:
+                raise Exception("Unsupported 'xyfail2'")
 
         if xybetter is not None:
-            tbetter = "BETTER"   # TODO: check/change here if pass or fail is defined
+            key_better = key_num
+            key_num += 1
+            tbetter = f"({key_better})"
             boxstyle = 'rarrow' if dbetter is None or dbetter>0 else 'larrow'
             if type(xybetter) is tuple:
                 x, y = xybetter
@@ -351,6 +377,8 @@ class ISO_Plots:
             elif type(xybetter) is list:
                 x, y = xybetter[0], xybetter[1]
                 ax.text(x, y, tbetter, color='gray', ha='center', va='center', rotation=90, size=16, bbox=dict(boxstyle=boxstyle, ec='gray', fc='white'))
+            else:
+                raise Exception("Unsupported 'xybetter'")
 
         if is_dc:
             plt.xticks([0.0], ['0'])
@@ -361,6 +389,12 @@ class ISO_Plots:
             self.fig_num = fig
 
         self.__AddKeyToFigure(fig, "Y", vunit)
+        if key_pass is not None:
+            self.__AddKeyToFigure(fig, f"({key_pass})", "Pass")
+        if key_fail is not None:
+            self.__AddKeyToFigure(fig, f"({key_fail})", "Fail")
+        if key_better is not None:
+            self.__AddKeyToFigure(fig, f"({key_better})", "Better")
 
         self.__FigSave(fig, figname)
 
