@@ -10,9 +10,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import ScalarFormatter
 from mpl_toolkits.axisartist.axislines import SubplotZero
+from enum import Enum
 import zipfile
 import re
 import locale
+
+
+#
+class FilenamingStyle(Enum):
+    ISO_DEFAULT_STYLE = 0
+    ISO_IMPROVED_STYLE = 1
 
 
 # class decorator
@@ -51,19 +58,21 @@ class ISO_Plots:
     # Initializer
     # ==========================================================================
 
-    def __init__(self, std_name, fig_dir, fig_fmt=".svg"):
+    def __init__(self, std_name, fig_dir, fig_fmt=".eps", filename_style=FilenamingStyle.ISO_IMPROVED_STYLE):
         """ISO_Plots constructor
 
         Args:
             std_name: name of the standard (e.g., "ISO 23760-10")
-            fig_fmt: type of figure plots to generate (either ".png" or ".svg")
+            fig_fmt: type of figure plots to generate (".eps", ".svg", ".png")
             fig_dir: output directory (e.g., "C:\\Temp\\output\\")
         """
         self.std_name = std_name      # name of the standard (e.g., "ISO 4091")
+        self.std_num, self.std_ed = ISO_Plots.split_std_number(std_name)
         self.fig_dir = fig_dir        # must end with "\\"
-        self.fig_fmt = fig_fmt        # ".svg" or ".png"
+        self.fig_fmt = fig_fmt        # ".eps", ".svg", or ".png"
         self.fig_num = 0
         self.appendix = None
+        self.filename_style = filename_style
         self.key_table = []
         self.zip_file_list = []
 
@@ -174,20 +183,33 @@ class ISO_Plots:
 
 
     # ==========================================================================
-    # Generate plots
+    # Generate and save plots
     # ==========================================================================
 
-    def __FigSave(self, fig, figname=None):
-        if self.appendix is None:
-            if figname is not None:
-                savename = f"{self.fig_dir}FIG-{fig:03}_{self.std_name}_(E)_Ed1 {figname}{self.fig_fmt}"
+    def __FigFilename(self, fig, figname=None):
+
+        if self.filename_style==FilenamingStyle.ISO_IMPROVED_STYLE:
+            if self.appendix is None:
+                if figname is not None:
+                    savename = f"{self.fig_dir}FIG-{fig:03}_{self.std_name}_(E)_Ed1 {figname}{self.fig_fmt}"
+                else:
+                    savename = f"{self.fig_dir}FIG-{fig:03}_{self.std_name}_(E)_Ed1{self.fig_fmt}"
             else:
-                savename = f"{self.fig_dir}FIG-{fig:03}_{self.std_name}_(E)_Ed1{self.fig_fmt}"
+                if figname is not None:
+                    savename = f"{self.fig_dir}FIG-{self.appendix}.{fig:03}_{self.std_name}_(E)_Ed1 {figname}{self.fig_fmt}"
+                else:
+                    savename = f"{self.fig_dir}FIG-{self.appendix}.{fig:03}_{self.std_name}_(E)_Ed1{self.fig_fmt}"
         else:
-            if figname is not None:
-                savename = f"{self.fig_dir}FIG-{self.appendix}.{fig:03}_{self.std_name}_(E)_Ed1 {figname}{self.fig_fmt}"
+            if self.appendix is None:
+                savename = f"{self.fig_dir}{self.std_num}{self.std_ed}fig{fig}{self.fig_fmt}"
             else:
-                savename = f"{self.fig_dir}FIG-{self.appendix}.{fig:03}_{self.std_name}_(E)_Ed1{self.fig_fmt}"
+                savename = f"{self.fig_dir}{self.std_num}{self.std_ed}fig_{self.appendix}_{fig}{self.fig_fmt}"
+
+        return savename
+
+
+    def __FigSave(self, fig, figname=None):
+        savename = self.__FigFilename(fig, figname)
         plt.savefig(savename)
         self.__AddFileToZip(savename)
 
@@ -446,6 +468,29 @@ class ISO_Plots:
             raise Exception("Invalid type for x. Accepts float and ndarray of float")
 
         return y
+
+    # parse out info from a given standard
+    # std is in the format: {} is optional
+    #   "{ISO }####{-##}"         implies edition 1
+    #   "{ISO }####{-##} ed##"    edition specified
+    #
+    # output is a tuple
+    #    ("####_##", "ed#")
+    @staticmethod
+    def split_std_number(std):
+        # ^(?:ISO\s+)?([1-9][0-9]*(?:[-_][1-9][0-9]*)?)\s*((?:ed\s*[1-9][0-9]*)?)$
+        m = re.search(r"^(?:ISO\s+)?([1-9][0-9]*(?:[-_][1-9][0-9]*)?)\s*((?:ed\s*[1-9][0-9]*)?)$", std, re.IGNORECASE)
+        if m is not None:
+            stdnum = m.group(1)   # need to convert - to _
+            edition = m.group(2)  # need to remove spaces and convert to lower
+            stdnum = stdnum.replace("-", "_")
+            edition = edition.replace(" ", "").lower()
+            if not edition:
+                edition = "ed1"
+        else:
+            stdnum = ""
+            edition = ""
+        return (stdnum, edition)
 
 
 # End of file
