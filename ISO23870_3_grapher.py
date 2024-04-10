@@ -175,7 +175,9 @@ def Atten_s_class2_conn_ES(f=None):
 Plots = ISO_Plots("ISO 23870-3", "C:\\Projects\\Python\\ISO23870_Grapher\\output-3\\", ".png")
 
 # skip the figures occurring before the plots
-Plots.ISO_Skip_Figure(8)
+Plots.ISO_Skip_Figure(4)
+Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-3\\FIG-005_ISO_23870-3_(E)_Ed1 Connector pinout.png")
+Plots.ISO_Skip_Figure(3)
 
 # Connector plots
 Plots.ISO_Plot(ILmax_conn, abbr="IL", unit="dB", ylim=[0.0, 0.25], xypass=(0.75,0.3), xyfail=(0.6,0.5), figname="Insertion Loss (IL) Connector")
