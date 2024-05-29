@@ -172,18 +172,18 @@ def Atten_s_class2_conn_ES(f=None):
 # Main Program Entry Point
 # ==============================================================================
 
-Plots = ISO_Plots("ISO 23870-3", "C:\\Projects\\Python\\ISO23870_Grapher\\output-3\\", ".png")
+Plots = ISO_Plots("ISO 23870-3", "C:\\Projects\\Python\\ISO23870_Grapher\\output-3\\", ".svg")
 
 # skip the figures occurring before the plots
 Plots.ISO_Skip_Figure(4)
 Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-3\\FIG-005_ISO_23870-3_(E)_Ed1 Connector pinout.png")
-Plots.ISO_Skip_Figure(3)
+Plots.ISO_Skip_Figure(2)
 
 # Connector plots
-Plots.ISO_Plot(ILmax_conn, abbr="IL", unit="dB", ylim=[0.0, 0.25], xypass=(0.75,0.3), xyfail=(0.6,0.5), figname="Insertion Loss (IL) Connector")
-Plots.ISO_Plot(RLmax_conn, abbr="RL", unit="dB", ylim=[15.0,35.0], xypass=(0.60, 0.82), xyfail=(0.60, 0.68), figname="Return Loss (RL) Connector")
-Plots.ISO_Plot(LCLmax_conn, abbr="LCL", unit="dB", ylim=[30.0, 60.0], xypass=(0.7,0.55), xyfail=(0.55, 0.35), figname="Mode Conversion Loss (LCL) Connector")
-Plots.ISO_Plot(LCLmax_conn, abbr="LCTL", unit="dB", ylim=[30.0, 60.0], xypass=(0.7,0.55), xyfail=(0.55, 0.35), figname="Mode Conversion Loss (LCTL) Connector")
+Plots.ISO_Plot(ILmax_conn, abbr="IL", unit="dB", ylim=[0.0, 0.25], xypass=(0.75,0.3), xyfail=(0.6,0.5), figname="Insertion loss (IL)")
+Plots.ISO_Plot(RLmax_conn, abbr="RL", unit="dB", ylim=[15.0,35.0], xypass=(0.60, 0.82), xyfail=(0.60, 0.68), figname="Return loss (RL)")
+Plots.ISO_Plot(LCLmax_conn, abbr="LCL", unit="dB", ylim=[30.0, 60.0], xypass=(0.7,0.55), xyfail=(0.55, 0.35), figname="Mode conversion loss (LCL)")
+Plots.ISO_Plot(LCLmax_conn, abbr="LCTL", unit="dB", ylim=[30.0, 60.0], xypass=(0.7,0.55), xyfail=(0.55, 0.35), figname="Mode conversion loss (LCTL)")
 Plots.ISO_Plot(Atten_c_class1_conn_ES, abbr="$a_\\mathrm{c}$", unit="dB", ylim=[50.0, 80.0], xypass=[400.0, 63.5], xyfail=[200.0, 56.5], figname="Coupling Attenuation Connector")
 Plots.ISO_Plot(Atten_s_class1_conn_ES, abbr="$a_\\mathrm{s}$", unit="dB", ylim=[10.0, 40.0], xypass=[150.0, 31.0], xyfail=[150.0, 26.0], figname="Screening Attenuation Connector")
 
