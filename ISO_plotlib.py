@@ -187,7 +187,6 @@ class ISO_Plots:
     # ==========================================================================
 
     def __FigFilename(self, fig, figname=None):
-
         if self.filename_style==FilenamingStyle.ISO_IMPROVED_STYLE:
             if self.appendix is None:
                 if figname is not None:
