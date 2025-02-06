@@ -53,6 +53,10 @@ class ISO_Plots:
         # Then, "ALWAYS use sans-serif fonts"
         plt.rcParams['font.family'] = "serif"
 
+        # set ISO requied label positions (TODO: this was not working with SubplotZero)
+        plt.rcParams['xaxis.labellocation'] = "right"
+        plt.rcParams['yaxis.labellocation'] = "top"
+
 
     # ==========================================================================
     # Initializer
@@ -317,16 +321,21 @@ class ISO_Plots:
             else:
                 plt.title(title, weight='bold')
 
-        ax.set_xlabel('F (MHz)')
+        # TODO: there seems to be a bug with SubplotZero that prevents the correct
+        # specified placement of xlabel and ylabel.
+        #ax.set_xlabel('X', loc='right')
+        ax.annotate('X', xy=(1.05,-0.05), xycoords='axes fraction')
 
-        if abbr is not None:
-            Yab = abbr
-        else:
-            Yab = 'Y'
-        if unit is not None:
-            ax.set_ylabel(f'{Yab} ({unit})')
-        else:
-            ax.set_ylabel(Yab)
+        #if abbr is not None:
+        #    Yab = abbr
+        #else:
+        #    Yab = 'Y'
+        #if unit is not None:
+        #    ax.set_ylabel(f'{Yab} ({unit})')
+        #else:
+        #    ax.set_ylabel(Yab)
+        #ax.set_ylabel('Y', loc='top')
+        ax.annotate('Y', xy=(-0.05, 1.05), xycoords='axes fraction')
 
         if abbr is not None and unit is not None:
             vunit = f'{abbr} ({unit})'
@@ -409,6 +418,7 @@ class ISO_Plots:
         else:
             self.fig_num = fig
 
+        self.__AddKeyToFigure(fig, "X", "Frequency [MHz]")
         self.__AddKeyToFigure(fig, "Y", vunit)
         if key_pass is not None:
             self.__AddKeyToFigure(fig, f"({key_pass})", "Pass")
