@@ -279,9 +279,9 @@ class ISO_Plots:
             if is_multi:
                 for idx in range(n_traces):
                     yt = y[:,idx]
-                    plt.semilogy(f, yt, 'b-')
+                    plt.semilogy(f, yt, 'k-')
             else:
-                plt.semilogy(f, y, 'b-')
+                plt.semilogy(f, y, 'k-')
 
         else:
             f1, f2 = np.min(f), 1000.0
@@ -296,14 +296,14 @@ class ISO_Plots:
                 for idx in range(n_traces):
                     yt = y[:,idx]
                     if logx:
-                        plt.semilogx(f,yt)
+                        plt.semilogx(f, yt, 'k-')
                     else:
-                        plt.plot(f,yt)
+                        plt.plot(f, yt, 'k-')
             else:
                 if logx:
-                    plt.semilogx(f, y)
+                    plt.semilogx(f, y, 'k-')
                 else:
-                    plt.plot(f,y)
+                    plt.plot(f, y, 'k-')
 
         if xlim is not None:
             plt.xlim(xlim)
@@ -331,16 +331,16 @@ class ISO_Plots:
         #else:
         #    Yab = 'Y'
         #if unit is not None:
-        #    ax.set_ylabel(f'{Yab} ({unit})')
+        #    ax.set_ylabel(f'{Yab} [{unit}]')
         #else:
         #    ax.set_ylabel(Yab)
         #ax.set_ylabel('Y', loc='top')
         ax.annotate('Y', xy=(-0.05, 1.05), xycoords='axes fraction')
 
         if abbr is not None and unit is not None:
-            vunit = f'{abbr} ({unit})'
+            vunit = f'{abbr} [{unit}]'
         elif abbr is None:
-            vunit = f'LIMIT ({unit})'
+            vunit = f'LIMIT [{unit}]'
         else:
             vunit = f'{abbr}'
 
