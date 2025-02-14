@@ -1,24 +1,24 @@
-FIG-008	X	Frequency [MHz]
-FIG-008	Y	IL [dB]
-FIG-008	(1)	Pass
-FIG-008	(2)	Fail
 FIG-009	X	Frequency [MHz]
-FIG-009	Y	RL [dB]
+FIG-009	Y	IL [dB]
 FIG-009	(1)	Pass
 FIG-009	(2)	Fail
 FIG-010	X	Frequency [MHz]
-FIG-010	Y	LCL [dB]
+FIG-010	Y	RL [dB]
 FIG-010	(1)	Pass
 FIG-010	(2)	Fail
 FIG-011	X	Frequency [MHz]
-FIG-011	Y	LCTL [dB]
+FIG-011	Y	LCL [dB]
 FIG-011	(1)	Pass
 FIG-011	(2)	Fail
 FIG-012	X	Frequency [MHz]
-FIG-012	Y	$a_\mathrm{c}$ [dB]
+FIG-012	Y	LCTL [dB]
 FIG-012	(1)	Pass
 FIG-012	(2)	Fail
 FIG-013	X	Frequency [MHz]
-FIG-013	Y	$a_\mathrm{s}$ [dB]
+FIG-013	Y	$a_\mathrm{c}$ [dB]
 FIG-013	(1)	Pass
 FIG-013	(2)	Fail
+FIG-014	X	Frequency [MHz]
+FIG-014	Y	$a_\mathrm{s}$ [dB]
+FIG-014	(1)	Pass
+FIG-014	(2)	Fail
