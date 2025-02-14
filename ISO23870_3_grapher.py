@@ -175,9 +175,15 @@ def Atten_s_class2_conn_ES(f=None):
 Plots = ISO_Plots("ISO 23870-3", "C:\\Projects\\Python\\ISO23870_Grapher\\output-3\\", ".svg")
 
 # skip the figures occurring before the plots
-Plots.ISO_Skip_Figure(4)
-Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-3\\FIG-005_ISO_23870-3_(E)_Ed1 Connector pinout.png")
-Plots.ISO_Skip_Figure(2)
+Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-3\\Figures\\FIG-001 ISO_23870-03 HSI connector receptacle mechanical drawing.vsdx")
+Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-3\\Figures\\FIG-002 ISO_23870-03 HSI-BC shell mechanical drawing.vsdx")
+Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-3\\Figures\\FIG-003 ISO_23870-03 HSI-EC shell mechanical drawing.vsdx")
+Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-3\\Figures\\FIG-004 ISO_23870-03 HSI-CP mechanical drawing.vsdx")
+Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-3\\Figures\\FIG-005 ISO_23870-03 HSI-BC panel cutour mechanical drawing.vsdx")
+Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-3\\Figures\\FIG-006 ISO_23870-03 Connector pinout.vsdx")
+Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-3\\Figures\\FIG-007 ISO_23870-03 HSI-BC and HSI-EC mechanical codings.vsdx")
+Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-3\\Figures\\FIG-008 ISO_23870-03 HSI-CP mechanical codings.vsdx")
+
 
 # Connector plots
 Plots.ISO_Plot(ILmax_conn, abbr="IL", unit="dB", ylim=[0.0, 0.25], xypass=(0.75,0.3), xyfail=(0.6,0.5), figname="Insertion loss (IL)")
@@ -189,8 +195,11 @@ Plots.ISO_Plot(Atten_s_class1_conn_ES, abbr="$a_\\mathrm{s}$", unit="dB", ylim=[
 
 # Appendix
 Plots.ISO_Start_Appendix()
-Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-3\\FIG-A.001_ISO_23870-10_(E)_Ed1 Qualification test sequence.png")
-Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-3\\FIG-A.002_ISO_23870-10_(E)_Ed1 Qualification test lot B detail.png")
-Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-3\\FIG-A.003_ISO_23870-10_(E)_Ed1 Qualification test 1000BASE-T1 measurement sequence.png")
+Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-3\\Figures\\FIG-A.001 ISO_23870-03 Conformance test sequence.vsdx")
+Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-3\\Figures\\FIG-A.002 ISO_23870-03 Conformance test lot B detail.vsdx")
+Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-3\\Figures\\FIG-A.003 ISO_23870-03 Conformance test 1000BASE-T1 measurement sequence.vsdx")
+Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-3\\Figures\\FIG-C01 ISO_23870-3 Hybrid cable composition.vsdx")
+Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-3\\Figures\\FIG-C02 ISO_23870-3 Hybrid cable dimensional drawing.vsdx")
+
 
 Plots.ISO_Wrapup()

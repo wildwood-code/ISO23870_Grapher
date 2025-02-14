@@ -1,0 +1,108 @@
+FIG-002	X	Frequency [MHz]
+FIG-002	Y	IL [dB]
+FIG-002	(1)	Pass
+FIG-002	(2)	Fail
+FIG-003	X	Frequency [MHz]
+FIG-003	Y	RL [dB]
+FIG-003	(1)	Pass
+FIG-003	(2)	Fail
+FIG-004	X	Frequency [MHz]
+FIG-004	Y	LCL [dB]
+FIG-004	(1)	Pass
+FIG-004	(2)	Fail
+FIG-005	X	Frequency [MHz]
+FIG-005	Y	LCTL [dB]
+FIG-005	(1)	Pass
+FIG-005	(2)	Fail
+FIG-006	X	Frequency [MHz]
+FIG-006	Y	PSANEXT [dB]
+FIG-006	(1)	Pass
+FIG-006	(2)	Fail
+FIG-007	X	Frequency [MHz]
+FIG-007	Y	PSAACRF [dB]
+FIG-007	(1)	Pass
+FIG-007	(2)	Fail
+FIG-008	X	Frequency [MHz]
+FIG-008	Y	$a_\mathrm{c}$ [dB]
+FIG-008	(1)	Pass
+FIG-008	(2)	Fail
+FIG-009	X	Frequency [MHz]
+FIG-009	Y	$a_\mathrm{s}$ [dB]
+FIG-009	(1)	Pass
+FIG-009	(2)	Fail
+FIG-011	X	Frequency [MHz]
+FIG-011	Y	RL [dB]
+FIG-011	(1)	Pass
+FIG-011	(2)	Fail
+FIG-012	X	Frequency [MHz]
+FIG-012	Y	LCL [dB]
+FIG-012	(1)	Pass
+FIG-012	(2)	Fail
+FIG-013	X	Frequency [MHz]
+FIG-013	Y	LCTL [dB]
+FIG-013	(1)	Pass
+FIG-013	(2)	Fail
+FIG-014	X	Frequency [MHz]
+FIG-014	Y	$a_\mathrm{c}$ [dB]
+FIG-014	(1)	Pass
+FIG-014	(2)	Fail
+FIG-015	X	Frequency [MHz]
+FIG-015	Y	$a_\mathrm{s}$ [dB]
+FIG-015	(1)	Pass
+FIG-015	(2)	Fail
+FIG-017	X	Frequency [MHz]
+FIG-017	Y	IL [dB/m]
+FIG-017	(1)	Pass
+FIG-017	(2)	Fail
+FIG-018	X	Frequency [MHz]
+FIG-018	Y	RL [dB]
+FIG-018	(1)	Pass
+FIG-018	(2)	Fail
+FIG-019	X	Frequency [MHz]
+FIG-019	Y	LCL [dB]
+FIG-019	(1)	Pass
+FIG-019	(2)	Fail
+FIG-020	X	Frequency [MHz]
+FIG-020	Y	LCTL [dB]
+FIG-020	(1)	Pass
+FIG-020	(2)	Fail
+FIG-021	X	Frequency [MHz]
+FIG-021	Y	$a_\mathrm{c}$ [dB]
+FIG-021	(1)	Pass
+FIG-021	(2)	Fail
+FIG-022	X	Frequency [MHz]
+FIG-022	Y	$a_\mathrm{s}$ [dB]
+FIG-022	(1)	Pass
+FIG-022	(2)	Fail
+FIG-025	X	Frequency [MHz]
+FIG-025	Y	IL [dB]
+FIG-025	(1)	Pass
+FIG-025	(2)	Fail
+FIG-026	X	Frequency [MHz]
+FIG-026	Y	RL [dB]
+FIG-026	(1)	Pass
+FIG-026	(2)	Fail
+FIG-027	X	Frequency [MHz]
+FIG-027	Y	LCL [dB]
+FIG-027	(1)	Pass
+FIG-027	(2)	Fail
+FIG-028	X	Frequency [MHz]
+FIG-028	Y	LCTL [dB]
+FIG-028	(1)	Pass
+FIG-028	(2)	Fail
+FIG-029	X	Frequency [MHz]
+FIG-029	Y	PSANEXT [dB]
+FIG-029	(1)	Pass
+FIG-029	(2)	Fail
+FIG-030	X	Frequency [MHz]
+FIG-030	Y	PSAFEXT [dB]
+FIG-030	(1)	Pass
+FIG-030	(2)	Fail
+FIG-031	X	Frequency [MHz]
+FIG-031	Y	$a_\mathrm{c}$ [dB]
+FIG-031	(1)	Pass
+FIG-031	(2)	Fail
+FIG-032	X	Frequency [MHz]
+FIG-032	Y	$a_\mathrm{s}$ [dB]
+FIG-032	(1)	Pass
+FIG-032	(2)	Fail

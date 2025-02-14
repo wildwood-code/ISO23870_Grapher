@@ -608,7 +608,7 @@ Plots = ISO_Plots("ISO 23870-10", "C:\\Projects\\Python\\ISO23870_Grapher\\outpu
 
 
 # Whole communication channel plots
-Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-10\\FIG-001_ISO_23870-10_(E)_Ed1 Comm Channel Representation.png")
+Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-10\\Figures\\FIG-001 ISO_23870-10 HSI communication channel representation.vsdx")
 Plots.ISO_Plot(ILmax_WCC_LSTB, abbr="IL", unit="dB", ylim=[0.0, 20.0], xypass=(0.75,0.35), xyfail=(0.55, 0.45), figname="HSI channel insertion loss")
 Plots.ISO_Plot(RLmax_WCC, abbr="RL", unit="dB", ylim=[10.0, 20.0], xypass=(0.60, 0.72), xyfail=(0.60, 0.45), figname="HSI channel return loss")
 Plots.ISO_Plot(LCLmax_WCC, abbr="LCL", unit="dB", ylim=[20.0, 45.0], xypass=(0.75,0.55), xyfail=(0.6, 0.35), figname="HSI channel longitudinal conversion loss")
@@ -619,7 +619,7 @@ Plots.ISO_Plot(Atten_c_class1_WCC_ES, abbr="$a_\\mathrm{c}$", unit="dB", ylim=[4
 Plots.ISO_Plot(Atten_s_class1_WCC_ES, abbr="$a_\\mathrm{s}$", unit="dB", ylim=[22.0, 28.0],  xypass=[130.0, 25.3], xyfail=[130.0, 24.6], figname="HSI channel screening attenuation")
 
 # Cable assembly plots
-Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-10\\FIG-010_ISO_23870-10_(E)_Ed1 Cable Assembly Representation.png")
+Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-10\\Figures\\FIG-010 ISO_23870-10 HSI cable assembly representation.vsdx")
 Plots.ISO_Plot(RLmax_cable_assy, abbr="RL", unit="dB", ylim=[10.0, 30.0], xypass=[20.0, 23.0], xyfail=[20.0, 20.5], figname="HSI cable assembly return loss")
 Plots.ISO_Plot(LCLmax_cable_assy,  abbr="LCL", unit="dB", ylim=[20.0, 45.0], xypass=[140.0, 37.7], xyfail=[140.0, 30.5], figname="HSI cable assembly longitudinal conversion loss")
 Plots.ISO_Plot(LCLmax_cable_assy,  abbr="LCTL", unit="dB", ylim=[20.0, 45.0], xypass=[140.0, 37.7], xyfail=[140.0, 30.5], figname="HSI cable assembly lontigudinal conversion transfer loss")
@@ -627,7 +627,7 @@ Plots.ISO_Plot(Atten_c_class1_cable_assy_ES, abbr="$a_\\mathrm{c}$", unit="dB", 
 Plots.ISO_Plot(Atten_s_class1_cable_assy_ES, abbr="$a_\\mathrm{s}$", unit="dB", ylim=[20.0, 35.0], xypass=[140.0, 30.0], xyfail=[140.0, 26.0], figname="HSI cable assembly screening attenuation")
 
 # Cable plots
-Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-10\\FIG-016_ISO_23870-10_(E)_Ed1 Cable Representation.png")
+Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-10\\Figures\\FIG-016 ISO_23870-10 HSI cable representation.vsdx")
 Plots.ISO_Plot(ILmax_cable, abbr="IL", unit='dB/m', ylim=[0.0, 1.0], xypass=[150.0, 0.25], xyfail=[50.0, 0.4], figname="HSI cable insertion loss")
 Plots.ISO_Plot(RLmax_cable, abbr="RL", unit="dB", ylim=[10.0, 25.0], xypass=[80.0, 20.0], xyfail=[80.0, 17.5], figname="HSI cable return loss")
 Plots.ISO_Plot(LCLmax_cable, abbr="LCL", unit="dB", ylim=[25.0, 55.0], xypass=[140.0, 47.0], xyfail=[140.0, 36.0], figname="HSI cable longitudinal conversion loss")
@@ -636,8 +636,8 @@ Plots.ISO_Plot(Atten_c_class1_cable_ES, abbr="$a_\\mathrm{c}$", unit="dB", ylim=
 Plots.ISO_Plot(Atten_s_class1_cable_ES, abbr="$a_\\mathrm{s}$", unit="dB", ylim=[25.0, 45.0], xypass=[140.0, 36.7], xyfail=[140.0, 33.0], figname="HSI cable screening attenuation")
 
 # Connector plots
-Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-10\\FIG-023_ISO_23870-10_(E)_Ed1 Inline Representation.png")
-Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-10\\FIG-024_ISO_23870-10_(E)_Ed1 MDI Representation.png")
+Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-10\\Figures\\FIG-023 ISO_23870-10 HSI connector system (cable-to-cable, inline) representation.vsdx")
+Plots.ISO_Add_External_File("C:\\Projects\\Python\\ISO23870_Grapher\\source-10\\Figures\\FIG-024 ISO_23870-10 HSI connector system (cable-to-board, MDI) representation.vsdx")
 Plots.ISO_Plot(ILmax_conn, abbr="IL", unit="dB", ylim=[0.0, 0.25], xypass=(0.75,0.3), xyfail=(0.6,0.5), figname="HSI connector insertion loss")
 Plots.ISO_Plot(RLmax_conn, abbr="RL", unit="dB", ylim=[15.0,35.0], xypass=(0.60, 0.82), xyfail=(0.60, 0.68), figname="HSI connector return loss")
 Plots.ISO_Plot(LCLmax_conn, abbr="LCL", unit="dB", ylim=[30.0, 60.0], xypass=(0.7,0.55), xyfail=(0.55, 0.35), figname="HSI connector longitudinal conversion loss")
